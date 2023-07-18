@@ -1,0 +1,1 @@
+exports.SERVER_ERROR = "SERVER SIDE ERROR";

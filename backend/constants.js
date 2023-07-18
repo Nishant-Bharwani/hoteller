@@ -1,0 +1,1 @@
+exports.API_SUCCESS_MESSAGE = "Welcome to Hoteller backend";
