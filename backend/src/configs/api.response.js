@@ -1,8 +1,8 @@
-const currentDataTime = require('../lib/current.date.time');
+const currentDateTime = require('../lib/current.date.time');
 
 exports.successResponse = (resultCode, title, message, data, maintenance) => ({
     result_code: resultCode,
-    time: currentDataTime(),
+    time: currentDateTime(),
     maintenance_info: maintenance || null,
     result: {
         title,

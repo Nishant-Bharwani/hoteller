@@ -3,12 +3,15 @@ const { SERVER_ERROR } = require("../../errors");
 const { errorResponse, successResponse } = require("../configs/api.response");
 const UserModel = require("../models/user.model");
 const hashService = require("../services/hash.service");
+const logger = require('../middlewares/winston.logger');
+const appRoot = require('app-root-path');
+const moment = require('moment');
 
 class AuthController {
     async register(req, res) {
         try {
             const { username, fullname, email, phone, password, dob, address, gender, role } = req.body;
-
+            console.log(username);
             if (username && fullname && email && password && dob && address) {
                 const usernameExists = await UserModel.findOne({ username });
                 const emailExists = await UserModel.findOne({ email });
@@ -16,6 +19,11 @@ class AuthController {
 
                 if (usernameExists) {
                     // Delete image
+                    if (req?.file?.filename) {
+                        fs.unlink(`${appRoot}/public/uploads/users/${req.file.filename}`, (err) => {
+                            if (err) { logger.error(err); }
+                        });
+                    }
 
                     return res.status(409).json(errorResponse(
                         9,
@@ -25,6 +33,11 @@ class AuthController {
                 }
 
                 if (emailExists) {
+                    if (req?.file?.filename) {
+                        fs.unlink(`${appRoot}/public/uploads/users/${req.file.filename}`, (err) => {
+                           if (err) { logger.error(err); }
+                        });
+                    }
                     return res.status(409).json(errorResponse(
                         9,
                         'ALREADY EXIST',
@@ -33,6 +46,11 @@ class AuthController {
                 }
 
                 if (phoneExists) {
+                    if (req?.file?.filename) {
+                        fs.unlink(`${appRoot}/public/uploads/users/${req.file.filename}`, (err) => {
+                            if (err) { logger.error(err); }
+                        });
+                    }
                     return res.status(409).json(errorResponse(
                         9,
                         'ALREADY EXIST',
@@ -50,7 +68,7 @@ class AuthController {
                     password: hashedPassword,
                     avatar: req.file ? `/uploads/users/${req.file.filename}` : '/avatar.png',
                     gender,
-                    dob,
+                    dob: moment(dob, 'DD-MM_YYYY').toDate(),
                     address,
                     role
                 });
@@ -59,20 +77,20 @@ class AuthController {
                     0,
                     'SUCCESS',
                     'User registered successful', {
-                        userName: user.userName,
-                        fullName: user.fullName,
-                        email: user.email,
-                        phone: user.phone,
-                        avatar: process.env.APP_BASE_URL + user.avatar,
-                        gender: user.gender,
-                        dob: user.dob,
-                        address: user.address,
-                        role: user.role,
-                        verified: user.verified,
-                        status: user.status,
-                        createdAt: user.createdAt,
-                        updatedAt: user.updatedAt
-                    }
+                    userName: user.userName,
+                    fullName: user.fullName,
+                    email: user.email,
+                    phone: user.phone,
+                    avatar: process.env.APP_BASE_URL + user.avatar,
+                    gender: user.gender,
+                    dob: user.dob,
+                    address: user.address,
+                    role: user.role,
+                    verified: user.verified,
+                    status: user.status,
+                    createdAt: user.createdAt,
+                    updatedAt: user.updatedAt
+                }
                 ));
 
 
@@ -81,24 +99,28 @@ class AuthController {
 
             } else {
                 // Delete image
-
-                res.status(500).json(errorResponse(
-                    2,
-                    SERVER_ERROR,
-                    error
+                if (req?.file?.filename) {
+                    fs.unlink(`${appRoot}/public/uploads/users/${req.file.filename}`, (err) => {
+                        if (err) { logger.error(err); }
+                    });
+                }
+                return res.status(400).json(errorResponse(
+                    1,
+                    'FAILED',
+                    'Please enter all required fields'
                 ));
             }
         } catch (err) {
-            // if (req ? .file ? .filename) {
-            //     fs.unlink(`${appRoot}/public/uploads/users/${req.file.filename}`, (err) => {
-            //         if (err) { logger.error(err); }
-            //     });
-            // }
+            if (req?.file?.filename) {
+                fs.unlink(`${appRoot}/public/uploads/users/${req.file.filename}`, (err) => {
+                    if (err) { logger.error(err); }
+                });
+            }
 
             res.status(500).json(errorResponse(
                 2,
                 'SERVER SIDE ERROR',
-                error
+                err
             ));
         }
     }

@@ -6,6 +6,7 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const appRoot = require('app-root-path');
+const bodyParser = require('body-parser');
 const helmet = require('helmet');
 
 // Middlewares and routes
@@ -25,7 +26,8 @@ app.use(morganLogger());
 const dbConnect = require('../db/connect.mongo.db');
 dbConnect();
 
-
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
