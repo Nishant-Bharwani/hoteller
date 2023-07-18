@@ -11,9 +11,10 @@ const helmet = require('helmet');
 // Middlewares and routes
 
 const morganLogger = require('../middlewares/morgan.logger');
-const defaultController = require('../controllers/default.controller');
+const defaultController = require('../controllers/default.controllers');
 const { notFoundRoute, errorHandler } = require('../middlewares/error.handler');
 const { limiter } = require('../middlewares/access.limiter');
+const authRoute = require('../routes/auth.routes');
 
 
 const app = express();
@@ -24,13 +25,15 @@ app.use(morganLogger());
 const dbConnect = require('../db/connect.mongo.db');
 dbConnect();
 
+
+app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', defaultController.defaultController);
 
 
-// app.use('/api/v1/auth', authRoute);
+app.use('/api/v1/auth', authRoute);
 
 app.use(notFoundRoute);
 app.use(errorHandler);
