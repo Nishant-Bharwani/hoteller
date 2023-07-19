@@ -6,9 +6,11 @@ const hashService = require("../services/hash.service");
 const logger = require('../middlewares/winston.logger');
 const appRoot = require('app-root-path');
 const moment = require('moment');
+const loginResponse = require('../configs/login.response');
 
 class AuthController {
     async register(req, res) {
+        
         try {
             const { username, fullname, email, phone, password, dob, address, gender, role } = req.body;
             console.log(username);
@@ -35,7 +37,7 @@ class AuthController {
                 if (emailExists) {
                     if (req?.file?.filename) {
                         fs.unlink(`${appRoot}/public/uploads/users/${req.file.filename}`, (err) => {
-                           if (err) { logger.error(err); }
+                            if (err) { logger.error(err); }
                         });
                     }
                     return res.status(409).json(errorResponse(
@@ -120,6 +122,77 @@ class AuthController {
             res.status(500).json(errorResponse(
                 2,
                 'SERVER SIDE ERROR',
+                err
+            ));
+        }
+    }
+
+
+    async login(req, res) {
+        try {
+            const { usernameOrEmail, password } = req.body;
+            const { loginType } = req.query;
+
+            if (!usernameOrEmail || !password) {
+                return res.status(400).json(errorResponse(
+                    1,
+                    'FAILED',
+                    'Please enter all necessary credentials'
+                ));
+            }
+
+            const user = await UserModel.findOne({
+                $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }]
+            }).select('password');
+
+            if (!user) {
+                return res.status(404).json(errorResponse(
+                    4,
+                    'UNKNOWN ACCESS',
+                    'User does not exist'
+                ));
+            }
+
+            if (loginType === 'admin') {
+                if (user.role !== 'admin') {
+                    return res.status(406).json(errorResponse(
+                        6,
+                        'UNABLE TO ACCESS',
+                        'Accessing the page or resource you were trying to reach is forbidden'
+                    ));
+                }
+            }
+
+            if (user.status === 'blocked') {
+                return res.status(406).json(errorResponse(
+                    6,
+                    'UNABLE TO ACCESS',
+                    'Accessing the page or resource you were trying to reach is forbidden'
+                ));
+            }
+            console.log(password, user.password);
+
+            const isPasswordMatch = hashService.validateHashedPassword(password, user.password);
+            if (!isPasswordMatch) {
+                return res.status(400).json(errorResponse(
+                    1,
+                    'FAILED',
+                    'User credentials are incorrect'
+                ));
+            }
+
+            const logUser = await UserModel.findByIdAndUpdate(
+                user._id,
+                { status: 'login' },
+                { new: true }
+            );
+
+            loginResponse(res, logUser);
+                
+        } catch (err) {
+            res.status(500).json(errorResponse(
+                1,
+                'FAILED',
                 err
             ));
         }
