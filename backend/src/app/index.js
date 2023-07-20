@@ -9,6 +9,7 @@ const appRoot = require('app-root-path');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 
+
 // Middlewares and routes
 
 const morganLogger = require('../middlewares/morgan.logger');
@@ -22,6 +23,7 @@ const app = express();
 
 app.use(limiter);
 app.use(morganLogger());
+app.use(cookieParser());
 
 const dbConnect = require('../db/connect.mongo.db');
 dbConnect();

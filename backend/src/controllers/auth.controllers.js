@@ -7,13 +7,19 @@ const logger = require('../middlewares/winston.logger');
 const appRoot = require('app-root-path');
 const moment = require('moment');
 const loginResponse = require('../configs/login.response');
+const { BASE_URL } = require('../../config');
+const sendEmail = require('../configs/send.mail');
+const UserDto = require('../dtos/user.dto');
+const { log } = require('winston');
+const crypto = require('crypto');
+
 
 class AuthController {
+
     async register(req, res) {
-        
+
         try {
             const { username, fullname, email, phone, password, dob, address, gender, role } = req.body;
-            console.log(username);
             if (username && fullname && email && password && dob && address) {
                 const usernameExists = await UserModel.findOne({ username });
                 const emailExists = await UserModel.findOne({ email });
@@ -78,26 +84,8 @@ class AuthController {
                 res.status(201).json(successResponse(
                     0,
                     'SUCCESS',
-                    'User registered successful', {
-                    userName: user.userName,
-                    fullName: user.fullName,
-                    email: user.email,
-                    phone: user.phone,
-                    avatar: process.env.APP_BASE_URL + user.avatar,
-                    gender: user.gender,
-                    dob: user.dob,
-                    address: user.address,
-                    role: user.role,
-                    verified: user.verified,
-                    status: user.status,
-                    createdAt: user.createdAt,
-                    updatedAt: user.updatedAt
-                }
+                    'User registered successful', new UserDto(user)
                 ));
-
-
-
-
 
             } else {
                 // Delete image
@@ -126,7 +114,6 @@ class AuthController {
             ));
         }
     }
-
 
     async login(req, res) {
         try {
@@ -170,9 +157,8 @@ class AuthController {
                     'Accessing the page or resource you were trying to reach is forbidden'
                 ));
             }
-            console.log(password, user.password);
 
-            const isPasswordMatch = hashService.validateHashedPassword(password, user.password);
+            const isPasswordMatch = await hashService.validateHashedPassword(password, user.password);
             if (!isPasswordMatch) {
                 return res.status(400).json(errorResponse(
                     1,
@@ -188,11 +174,135 @@ class AuthController {
             );
 
             loginResponse(res, logUser);
-                
+
         } catch (err) {
             res.status(500).json(errorResponse(
                 1,
                 'FAILED',
+                err
+            ));
+        }
+    }
+
+    async logout(req, res) {
+        try {
+            const { user } = req;
+            if (!user) {
+                return res.status(404).json(errorResponse(
+                    4,
+                    'UNKNOWN ACCESS',
+                    'Unauthorized access. Please login to continue'
+                ));
+            }
+
+            await UserModel.findByIdAndUpdate(
+                user._id,
+                { status: 'logout', updatedAt: Date.now() },
+                { new: true }
+            );
+
+            // remove cookie
+            res.clearCookie('AccessToken');
+            res.clearCookie('RefreshToken');
+            res.status(200).json(successResponse(
+                0,
+                'SUCCESS',
+                'User logged out successful'
+            ));
+        } catch (err) {
+            res.status(500).json(errorResponse(
+                2,
+                SERVER_ERROR,
+                err
+            ));
+        }
+    }
+
+    async forgotPassword(req, res) {
+        try {
+            logger.info(req.body.usernameOrEmail);
+            const user = await UserModel.findOne({
+                $or: [{ username: req.body.usernameOrEmail }, { email: req.body.usernameOrEmail }]
+            });
+
+            if (!user) {
+                return res.status(404).json(errorResponse(
+                    4,
+                    'UNKNOWN ACCESS',
+                    'User does not exist'
+                ));
+            }
+
+            const resetToken = await user.getResetPasswordToken();
+            await user.save({ validateBeforeSave: false });
+
+            const url = `${BASE_URL}/auth/forgot-password/${resetToken}`;
+            const subjects = 'Password Recovery Email';
+            const message = 'Click below link to reset your password. If you have not requested this email simply ignore this email.';
+            const title = 'Recover Your Password';
+
+            sendEmail(res, user, url, subjects, message, title);
+        } catch (err) {
+            res.status(500).json(errorResponse(
+                2,
+                SERVER_ERROR,
+                err
+            ));
+        }
+    }
+
+    async resetPassword(req, res) {
+        try {
+            if (req.params.token && req.body.password && req.body.confirmPassword) {
+                const resetPasswordToken = crypto
+                .createHash('sha256')
+                .update(req.params.token)
+                .digest('hex');
+
+                const user = await UserModel.findOne({
+                    resetPasswordToken,
+                    resetPasswordExpire: { $gt: Date.now() }
+                });
+
+
+                if (!user) {
+                    return res.status(404).json(errorResponse(
+                        4,
+                        'UNKNOWN ACCESS',
+                        'Reset Password Token is invalid or has been expired'
+                    ));
+                }
+
+                if (req.body.password !== req.body.confirmPassword) {
+                    return res.status(400).json(errorResponse(
+                        1,
+                        'FAILED',
+                        'Password and Confirm password does not match'
+                    ));
+                }
+
+                const hashedPassword = await hashService.hashPassword(req.body.password);
+                user.password = hashedPassword;
+                user.resetPasswordToken = undefined;
+                user.resetPasswordExpire = undefined;
+                await user.save();
+
+                res.status(200).json(successResponse(
+                    0,
+                    'SUCCESS',
+                    'User password reset successful'
+                ));
+            } else {
+                return res.status(400).json(errorResponse(
+                    1,
+                    'FAILED',
+                    'Please enter all required fields'
+                ));
+            }
+        } catch (err) {
+            res.status(500).json(errorResponse(
+                2,
+                SERVER_ERROR,
                 err
             ));
         }

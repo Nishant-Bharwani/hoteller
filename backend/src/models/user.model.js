@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator')
 const Schema = mongoose.Schema;
+const crypto = require('crypto');
 
 const usersSchema = Schema({
     username: {
@@ -82,5 +83,18 @@ usersSchema.pre('save', function(next) {
 
     next();
 });
+
+usersSchema.methods.getResetPasswordToken = function () {
+    // Generating token
+    const resetToken = crypto.randomBytes(20).toString('hex');
+  
+    this.resetPasswordToken = crypto
+      .createHash('sha256')
+      .update(resetToken)
+      .digest('hex');
+  
+    this.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
+    return resetToken;
+  };
 
 module.exports = mongoose.model('Users', usersSchema);

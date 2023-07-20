@@ -1,0 +1,57 @@
+const jwt = require('jsonwebtoken');
+const { errorResponse } = require('../configs/api.response');
+const UserModel = require('../models/user.model');
+const { SERVER_ERROR } = require('../../errors');
+const tokenService = require('../services/token.service');
+
+
+exports.isAuthenticatedUser = async (req, res, next) => {
+    try {
+        const { AccessToken } = req.cookies;
+        if (!AccessToken) {
+            return res.status(403).json(errorResponse(
+                3,
+                'ACCESS FORBIDDEN',
+                'Authorization is required'
+            ));
+        }
+
+        const userData = await tokenService.verifyAccessToken(AccessToken);
+
+        if (!userData) {
+            return res.status(404).json(errorResponse(
+                11,
+                'JWT TOKEN INVALID',
+                'JWT token is expired/invalid. Please logout and login again'
+            ));
+        }
+
+        const user = await UserModel.findById(userData.userId);
+        if (!user) {
+            return res.status(404).json(errorResponse(
+                4,
+                'UNKNOWN ACCESS',
+                'Authorization is missing/invalid'
+            ));
+        }
+
+        if (user.status === 'login') {
+            req.user = user;
+            next();
+        } else {
+            return res.status(401).json(errorResponse(
+                1,
+                'FAILED',
+                'Unauthorized access. Please login to continue'
+            ));
+        }
+
+
+    } catch (err) {
+        res.status(500).json(errorResponse(
+            2,
+            SERVER_ERROR,
+            err
+        ));
+    }
+};

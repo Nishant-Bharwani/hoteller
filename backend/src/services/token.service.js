@@ -32,7 +32,7 @@ class TokenService {
 
             });
         } catch (err) {
-            console.log(err);
+            logger.error(err);
         }
     }
 
