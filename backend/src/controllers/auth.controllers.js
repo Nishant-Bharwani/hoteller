@@ -255,9 +255,9 @@ class AuthController {
         try {
             if (req.params.token && req.body.password && req.body.confirmPassword) {
                 const resetPasswordToken = crypto
-                .createHash('sha256')
-                .update(req.params.token)
-                .digest('hex');
+                    .createHash('sha256')
+                    .update(req.params.token)
+                    .digest('hex');
 
                 const user = await UserModel.findOne({
                     resetPasswordToken,
@@ -291,6 +291,92 @@ class AuthController {
                     0,
                     'SUCCESS',
                     'User password reset successful'
+                ));
+            } else {
+                return res.status(400).json(errorResponse(
+                    1,
+                    'FAILED',
+                    'Please enter all required fields'
+                ));
+            }
+        } catch (err) {
+            res.status(500).json(errorResponse(
+                2,
+                SERVER_ERROR,
+                err
+            ));
+        }
+    }
+
+    async sendEmailVerificationLink(req, res) {
+        try {
+            const { user } = req;
+
+            if (!user) {
+                return res.status(404).json(errorResponse(
+                    4,
+                    'UNKNOWN ACCESS',
+                    'User does not exist'
+                ));
+            }
+
+            if (user.verified) {
+                return res.status(400).json(errorResponse(
+                    1,
+                    'FAILED',
+                    'Ops! Your mail already verified'
+                ));
+            }
+
+            const emailVerificationToken = user.getEmailVerificationToken();
+
+            await user.save({ validateBeforeSave: false });
+
+            const url = `${BASE_URL}/auth/verify-email/${emailVerificationToken}`;
+            const subjects = 'User Email Verification';
+            const message = 'Click below link to verify your email. If you have not requested this email simply ignore this email.';
+            const title = 'Verify Your Email';
+
+            sendEmail(res, user, url, subjects, message, title);
+
+        } catch (err) {
+            res.status(500).json(errorResponse(
+                2,
+                SERVER_ERROR,
+                err
+            ));
+        }
+    }
+
+    async verifyEmail(req, res) {
+        try {
+            if (req.params.token) {
+                const emailVerificationToken = crypto
+                    .createHash('sha256')
+                    .update(req.params.token)
+                    .digest('hex');
+                const user = await UserModel.findOne({
+                    emailVerificationToken,
+                    emailVerificationExpire: { $gt: Date.now() }
+                });
+
+                if (!user) {
+                    return res.status(404).json(errorResponse(
+                        4,
+                        'UNKNOWN ACCESS',
+                        'Email verification token is invalid or has been expired'
+                    ));
+                }
+
+                user.emailVerificationToken = undefined;
+                user.emailVerificationExpire = undefined;
+                user.verified = true;
+                await user.save();
+
+                res.status(200).json(successResponse(
+                    0,
+                    'SUCCESS',
+                    'User email verification successful'
                 ));
             } else {
                 return res.status(400).json(errorResponse(

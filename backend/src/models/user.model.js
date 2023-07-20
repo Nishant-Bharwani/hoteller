@@ -76,7 +76,7 @@ const usersSchema = Schema({
 
 }, { timestamps: true });
 
-usersSchema.pre('save', function(next) {
+usersSchema.pre('save', function (next) {
     if (this.username) {
         this.username = this.username.replace(/\s/g, '-');
     }
@@ -87,14 +87,26 @@ usersSchema.pre('save', function(next) {
 usersSchema.methods.getResetPasswordToken = function () {
     // Generating token
     const resetToken = crypto.randomBytes(20).toString('hex');
-  
+
     this.resetPasswordToken = crypto
-      .createHash('sha256')
-      .update(resetToken)
-      .digest('hex');
-  
+        .createHash('sha256')
+        .update(resetToken)
+        .digest('hex');
+
     this.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
     return resetToken;
-  };
+};
+
+usersSchema.methods.getEmailVerificationToken = function () {
+    const verificationToken = crypto.randomBytes(20).toString('hex');
+
+    this.emailVerificationToken = crypto
+        .createHash('sha256')
+        .update(verificationToken)
+        .digest('hex');
+
+    this.emailVerificationExpire = Date.now() + 15 * 60 * 1000;
+    return verificationToken;
+}
 
 module.exports = mongoose.model('Users', usersSchema);
