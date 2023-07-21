@@ -15,5 +15,4 @@ router.route('/reset-password/:token').post(authController.resetPassword);
 router.route('/send-email-verification-link').post(isAuthenticatedUser, isBlocked, authController.sendEmailVerificationLink);
 router.route('/verify-email/:token').post(isAuthenticatedUser, isBlocked, authController.verifyEmail);
 
-
 module.exports = router;

@@ -5,6 +5,13 @@ const addonSchema = new mongoose.Schema({
         type: String,
         required: [true, "Addon name field is required"]
     },
+    addonSlug: {
+        type: String,
+        trim: true,
+        unique: true,
+        lowercase: true,
+        required: [true, 'Room slug filed is required']
+    },
     description: {
         type: String,
 
@@ -15,5 +22,12 @@ const addonSchema = new mongoose.Schema({
     }
 
 }, { timestamps: true });
+
+addonSchema.pre('save', function(next) {
+    if (this.addonSlug) {
+        this.addonSlug = this.addonSlug.replace(/\s/g, '-');
+    }
+    next();
+});
 
 module.exports = mongoose.model('Addons', addonSchema);

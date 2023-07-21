@@ -75,7 +75,7 @@ const roomsSchema = new mongoose.Schema({
 
 roomsSchema.pre('save', function(next) {
     if (this.roomSlug) {
-        this.room_slug = this.roomSlug.replace(/\s/g, '-');
+        this.roomSlug = this.roomSlug.replace(/\s/g, '-');
     }
     next();
 });
