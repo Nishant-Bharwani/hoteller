@@ -124,6 +124,7 @@ class HotelController {
     }
 
     
+
 };
 
 module.exports = new HotelController();

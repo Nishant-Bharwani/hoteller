@@ -18,6 +18,7 @@ const { notFoundRoute, errorHandler } = require('../middlewares/error.handler');
 const { limiter } = require('../middlewares/access.limiter');
 const authRoute = require('../routes/auth.routes');
 const hotelRoute = require('../routes/hotel.routes');
+const roomRoute = require('../routes/room.routes');
 
 
 const app = express();
@@ -40,6 +41,7 @@ app.get('/', defaultController.defaultController);
 
 app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/hotel', hotelRoute);
+app.use('/api/v1/room', roomRoute);
 
 app.use(notFoundRoute);
 app.use(errorHandler);

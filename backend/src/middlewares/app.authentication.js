@@ -86,3 +86,36 @@ exports.isBlocked = async (req, res, next) => {
         ));
     }
 };
+
+exports.isAdmin = (req, res, next) => {
+    try {
+        const { user } = req;
+
+        if (!user) {
+            return res.status(404).json(errorResponse(
+                4,
+                'UNKNOWN ACCESS',
+                'Sorry, User does not exist'
+            ));
+        }
+
+        if (user.role === 'admin') {
+            next();
+        } else {
+            return res.status(406).json(errorResponse(
+                6,
+                'UNABLE TO ACCESS',
+                'Accessing the page or resource you were trying to reach is forbidden'
+            ));
+        }
+
+
+
+    } catch (err) {
+        res.status(500).json(errorResponse(
+            2,
+            SERVER_ERROR,
+            err
+        ));
+    }
+};

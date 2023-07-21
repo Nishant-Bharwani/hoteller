@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const roomsSchema = new mongoose.Schema({
+    hotelId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Hotels',
+        required: [true, 'Hotel Id is required field']
+    },
     roomName: {
         type: String,
         unique: true,
