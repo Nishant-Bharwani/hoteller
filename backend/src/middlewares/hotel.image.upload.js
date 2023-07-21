@@ -5,7 +5,7 @@ const fs = require('fs');
 
 
 const uploadPath = () => {
-    const UPLOADS_FOLDER = './public/uploads/rooms';
+    const UPLOADS_FOLDER = './public/uploads/hotels';
 
     if (!fs.existsSync('./public/uploads')) {
         fs.mkdirSync('./public/uploads', { recursive: true });
@@ -31,13 +31,13 @@ const storage = multer.diskStorage({
 });
 
 
-const roomImageUpload = multer({
+const hotelImageUpload = multer({
     storage,
     limits: {
         fileSize: 1000000 // 1MB
     },
     fileFilter: (_req, files, cb) => {
-        if (files.fieldname === 'roomImages') {
+        if (files.fieldname === 'hotelImages') {
             if (files.mimetype === 'image/png' || files.mimetype === 'image/jpg' || files.mimetype === 'image/jpeg') {
                 cb(null, true);
             } else {
@@ -49,4 +49,4 @@ const roomImageUpload = multer({
     }
 })
 
-module.exports = roomImageUpload;
+module.exports = hotelImageUpload;

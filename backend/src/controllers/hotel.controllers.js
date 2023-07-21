@@ -123,7 +123,138 @@ class HotelController {
         }
     }
 
-    
+    async createHotel(req, res) {
+        try {
+            const { name, hotelSlug, address, city, description, facilities = [] } = req.body;
+            if (!name) {
+                for (const element of req.files) {
+                    fs.unlink(`${appRoot}/public/uploads/hotels/${element.filename}`, (err) => {
+                        if (err) { logger.error(err); }
+                    });
+                }
+                return res.status(400).json(errorResponse(
+                    1,
+                    'FAILED',
+                    '`Name` filed is required '
+                ));
+            }
+
+            if (!hotelSlug) {
+                for (const element of req.files) {
+                    fs.unlink(`${appRoot}/public/uploads/hotels/${element.filename}`, (err) => {
+                        if (err) { logger.error(err); }
+                    });
+                }
+                return res.status(400).json(errorResponse(
+                    1,
+                    'FAILED',
+                    '`hotelSlug` filed is required '
+                ));
+            }
+
+            if (!address) {
+                for (const element of req.files) {
+                    fs.unlink(`${appRoot}/public/uploads/hotels/${element.filename}`, (err) => {
+                        if (err) { logger.error(err); }
+                    });
+                }
+                return res.status(400).json(errorResponse(
+                    1,
+                    'FAILED',
+                    '`address` filed is required '
+                ));
+            }
+
+            if (!city) {
+                for (const element of req.files) {
+                    fs.unlink(`${appRoot}/public/uploads/hotels/${element.filename}`, (err) => {
+                        if (err) { logger.error(err); }
+                    });
+                }
+                return res.status(400).json(errorResponse(
+                    1,
+                    'FAILED',
+                    '`city` filed is required '
+                ));
+            }
+
+            if (!description) {
+                for (const element of req.files) {
+                    fs.unlink(`${appRoot}/public/uploads/hotels/${element.filename}`, (err) => {
+                        if (err) { logger.error(err); }
+                    });
+                }
+                return res.status(400).json(errorResponse(
+                    1,
+                    'FAILED',
+                    '`description` filed is required '
+                ));
+            }
+
+            if (!req.files[0]) {
+                for (const element of req.files) {
+                    fs.unlink(`${appRoot}/public/uploads/hotels/${element.filename}`, (err) => {
+                        if (err) { logger.error(err); }
+                    });
+                }
+                return res.status(400).json(errorResponse(
+                    1,
+                    'FAILED',
+                    'Minimum 1 `hotelImage` filed is required '
+                ));
+            }
+
+            const hotel1 = await HotelModel.findOne({ hotelSlug });
+            if (hotel1) {
+                for (const element of req.files) {
+                    fs.unlink(`${appRoot}/public/uploads/hotels/${element.filename}`, (err) => {
+                        if (err) { logger.error(err); }
+                    });
+                }
+                return res.status(409).json(errorResponse(
+                    9,
+                    'ALREADY EXIST',
+                    'Sorry, this `hotelName` already exists'
+                ));
+            }
+
+            const data = {
+                name,
+                hotelSlug,
+                address,
+                city,
+                description,
+                facilities,
+                hotelImages: req?.files?.map((file) => ({ url: `/uploads/rooms/${file.filename}` })),
+                addedBy: req.user._id
+            };
+
+            const hotel = await HotelModel.create(data);
+            res.status(201).json(successResponse(
+                0,
+                'SUCCESS',
+                'New Hotel create successful',
+                hotel
+            ));
+        } catch (err) {
+            for (const element of req.files) {
+                fs.unlink(`${appRoot}/public/uploads/hotels/${element.filename}`, (err) => {
+                    if (err) { logger.error(err); }
+                });
+            }
+
+            res.status(500).json(errorResponse(
+                2,
+                SERVER_ERROR,
+                error
+            ));
+        }
+
+
+
+
+
+    }
 
 };
 
