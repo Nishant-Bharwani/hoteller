@@ -3,6 +3,8 @@ const { successResponse, errorResponse } = require('../configs/api.response');
 const { SERVER_ERROR } = require('../../errors');
 const RoomModel = require('../models/room.model');
 const QueryHelper = require('../configs/api.feature');
+const fs = require('fs');
+const appRoot = require('app-root-path');
 
 class RoomController {
     async getRoomsByHotelId(req, res) {

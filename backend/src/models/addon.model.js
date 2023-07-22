@@ -10,7 +10,7 @@ const addonSchema = new mongoose.Schema({
         trim: true,
         unique: true,
         lowercase: true,
-        required: [true, 'Room slug filed is required']
+        required: [true, 'Addon slug field is required']
     },
     description: {
         type: String,
