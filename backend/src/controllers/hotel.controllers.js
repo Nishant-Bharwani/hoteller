@@ -3,6 +3,8 @@ const { successResponse, errorResponse } = require('../configs/api.response');
 const QueryHelper = require('../configs/api.feature');
 const HotelModel = require('../models/hotel.model');
 const CityModel = require('../models/city.model');
+const fs = require('fs');
+const appRoot = require('app-root-path');
 
 class HotelController {
     async getAllHotels(req, res) {
@@ -58,17 +60,19 @@ class HotelController {
             }).populate('city'), req.query).search('name').sort().paginate();
 
             const findHotels = await hotelQuery.query;
+            console.log(findHotels);
             res.status(200).json(successResponse(
                 0,
                 'SUCCESS',
                 'Hotels list data found successfully',
-                {
-                    rows: findHotels,
-                    total_rows: hotels.length,
-                    response_rows: findHotels.length,
-                    total_page: req?.query?.keyword ? Math.ceil(findHotels.length / req.query.limit) : Math.ceil(hotels.length / req.query.limit),
-                    current_page: req?.query?.page ? parseInt(req.query.page, 10) : 1
-                }
+                // {
+                //     rows: findHotels,
+                //     total_rows: hotels.length,
+                //     response_rows: findHotels.length,
+                //     total_page: req?.query?.keyword ? Math.ceil(findHotels.length / req.query.limit) : Math.ceil(hotels.length / req.query.limit),
+                //     current_page: req?.query?.page ? parseInt(req.query.page, 10) : 1
+                // }
+                findHotels
             ));
 
 
@@ -139,6 +143,7 @@ class HotelController {
                 ));
             }
 
+
             if (!hotelSlug) {
                 for (const element of req.files) {
                     fs.unlink(`${appRoot}/public/uploads/hotels/${element.filename}`, (err) => {
@@ -205,6 +210,7 @@ class HotelController {
             }
 
             const hotel1 = await HotelModel.findOne({ hotelSlug });
+
             if (hotel1) {
                 for (const element of req.files) {
                     fs.unlink(`${appRoot}/public/uploads/hotels/${element.filename}`, (err) => {
@@ -218,22 +224,23 @@ class HotelController {
                 ));
             }
 
-            const data = {
+            const hotel = await HotelModel.create({
                 name,
+                // hotelSlug: hotelSlug.replace(/\s/g, '-'),
                 hotelSlug,
                 address,
                 city,
                 description,
                 facilities,
                 hotelImages: req?.files?.map((file) => ({ url: `/uploads/rooms/${file.filename}` })),
-                addedBy: req.user._id
-            };
+                addedBy: req?.user?._id
+                
+            });
 
-            const hotel = await HotelModel.create(data);
             res.status(201).json(successResponse(
                 0,
                 'SUCCESS',
-                'New Hotel create successful',
+                'New Hotel created successfullly',
                 hotel
             ));
         } catch (err) {
@@ -246,14 +253,9 @@ class HotelController {
             res.status(500).json(errorResponse(
                 2,
                 SERVER_ERROR,
-                error
+                err
             ));
         }
-
-
-
-
-
     }
 
 };

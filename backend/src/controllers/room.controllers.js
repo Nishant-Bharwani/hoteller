@@ -52,7 +52,7 @@ class RoomController {
 
     async createRoom(req, res) {
         try {
-            const { hotelId, roomName, roomSlug, roomType, roomPrice, roomSize, roomCapacity, featuredRoom, roomDescription, extraFacilities, roomStatus } = req.body;
+            const { hotelId, roomName, roomSlug, roomType, roomPrice, roomSize, roomCapacity, featuredRoom, roomDescription, extraFacilities = [], roomStatus } = req.body;
 
             const hotel = await HotelModel.findById(hotelId);
             if (!hotel) {

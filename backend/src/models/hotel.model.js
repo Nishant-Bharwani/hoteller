@@ -41,14 +41,14 @@ const hotelSchema = Schema({
     hotelImages: [{
         url: {
             type: String,
-            required: [true, 'Room image filed is required']
+            required: [true, 'Hotel image filed is required']
         }
     }],
     hotelReviews: [{
         userId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Users',
-            required: [true, 'Room created by is required field']
+            required: [true, 'Hotel created by is required field']
         },
         rating: {
             type: Number,
@@ -67,6 +67,8 @@ hotelSchema.pre('save', function(next) {
     if (this.hotelSlug) {
         this.hotelSlug = this.hotelSlug.replace(/\s/g, '-');
     }
+    next();
+
 });
 
 module.exports = mongoose.model('Hotels', hotelSchema);
