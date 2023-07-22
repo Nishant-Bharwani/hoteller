@@ -7,11 +7,12 @@ const logger = require('../middlewares/winston.logger');
 const appRoot = require('app-root-path');
 const moment = require('moment');
 const loginResponse = require('../configs/login.response');
-const { BASE_URL } = require('../../config');
+const { BASE_URL, JWT_TOKEN_COOKIE_EXPIRES } = require('../../config');
 const sendEmail = require('../configs/send.mail');
 const UserDto = require('../dtos/user.dto');
-const { log } = require('winston');
 const crypto = require('crypto');
+const tokenService = require('../services/token.service');
+const currentDateTime = require('../lib/current.date.time');
 
 
 class AuthController {
@@ -173,7 +174,7 @@ class AuthController {
                 { new: true }
             );
 
-            loginResponse(res, logUser);
+            await loginResponse(res, logUser);
 
         } catch (err) {
             res.status(500).json(errorResponse(
@@ -200,6 +201,9 @@ class AuthController {
                 { status: 'logout', updatedAt: Date.now() },
                 { new: true }
             );
+
+            const { RefreshToken } = req.cookies;
+            await tokenService.removeToken(RefreshToken);
 
             // remove cookie
             res.clearCookie('AccessToken');
@@ -393,6 +397,53 @@ class AuthController {
             ));
         }
     }
+
+    async refreshToken(req, res) {
+        try {
+            const { user } = req;
+            if (!user) {
+                return res.status(404).json(errorResponse(
+                    4,
+                    'UNKNOWN ACCESS',
+                    'User does not exist'
+                ));
+            }
+            console.log(user);
+            const { accessToken, refreshToken } = tokenService.generateTokens({ userId: user._id });
+            await tokenService.updateRefreshToken(user._id, refreshToken);
+
+            const cookieOptions = {
+                expires: new Date(Date.now() + JWT_TOKEN_COOKIE_EXPIRES * 24 * 60 * 60 * 1000),
+                httpOnly: true
+            }
+            res
+                .status(200)
+                .cookie('AccessToken', accessToken, cookieOptions)
+                .cookie('RefreshToken', refreshToken, cookieOptions)
+                .json({
+                    result_code: 0,
+                    time: currentDateTime(),
+                    access_token: accessToken,
+                    refresh_token: refreshToken,
+                    result: {
+                        title: 'SUCCESS',
+                        message: 'Refresh Token updated',
+                        data: new UserDto(user)
+                    }
+                });
+
+
+        } catch (err) {
+            res.status(500).json(errorResponse(
+                2,
+                SERVER_ERROR,
+                err
+            ));
+        }
+
+
+    }
+
 };
 
 module.exports = new AuthController();

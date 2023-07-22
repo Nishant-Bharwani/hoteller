@@ -60,7 +60,7 @@ class HotelController {
             }).populate('city'), req.query).search('name').sort().paginate();
 
             const findHotels = await hotelQuery.query;
-            console.log(findHotels);
+            
             res.status(200).json(successResponse(
                 0,
                 'SUCCESS',

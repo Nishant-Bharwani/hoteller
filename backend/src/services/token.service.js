@@ -6,7 +6,7 @@ class TokenService {
 
     generateTokens(payload) {
         const accessToken = jwt.sign(payload, JWT_ACCESS_TOKEN_SECRET_KEY, {
-            expiresIn: '1m'
+            expiresIn: '1h'
         });
 
         const refreshToken = jwt.sign(payload, JWT_REFRESH_TOKEN_SECRET_KEY, {

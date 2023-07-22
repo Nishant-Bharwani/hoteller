@@ -4,13 +4,15 @@ const { JWT_TOKEN_COOKIE_EXPIRES } = require('../../config');
 const UserDto = require('../dtos/user.dto');
 
 
-const loginResponse = (res, user, maintenance) => {
+const loginResponse = async (res, user, maintenance) => {
     const { accessToken, refreshToken } = tokenService.generateTokens({ userId: user._id });
 
     const cookieOptions = {
         expires: new Date(Date.now() + JWT_TOKEN_COOKIE_EXPIRES * 24 * 60 * 60 * 1000),
         httpOnly: true
     }
+
+    await tokenService.storeRefreshToken(refreshToken, user._id);
 
     res
         .status(200)

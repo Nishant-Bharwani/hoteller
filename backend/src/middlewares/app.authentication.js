@@ -119,3 +119,66 @@ exports.isAdmin = (req, res, next) => {
         ));
     }
 };
+
+exports.isRefreshTokenValid = async (req, res, next) => {
+    try {
+        const { RefreshToken } = req.cookies;
+
+        if (!RefreshToken) {
+            return res.status(403).json(errorResponse(
+                3,
+                'ACCESS FORBIDDEN',
+                'Authorization is required'
+            ));
+        }
+
+        let userData;
+
+        userData = await tokenService.verifyRefreshToken(RefreshToken);
+        console.log(userData);
+        if (!userData) {
+            return res.status(404).json(errorResponse(
+                11,
+                'JWT TOKEN INVALID',
+                'JWT token is expired/invalid. Please logout and login again'
+            ));
+        }
+
+        userData = await tokenService.findRefreshToken(userData.userId, RefreshToken);
+
+        if (!userData) {
+            return res.status(404).json(errorResponse(
+                11,
+                'JWT TOKEN INVALID',
+                'JWT token is expired/invalid. Please logout and login again'
+            ));
+        }
+
+        const user = await UserModel.findById(userData.userId);
+        if (!user) {
+            return res.status(404).json(errorResponse(
+                4,
+                'UNKNOWN ACCESS',
+                'Authorization is missing/invalid'
+            ));
+        }
+
+        if (user.status === 'login') {
+            req.user = user;
+            next();
+        } else {
+            return res.status(401).json(errorResponse(
+                1,
+                'FAILED',
+                'Unauthorized access. Please login to continue'
+            ));
+        }
+
+    } catch (err) {
+        res.status(500).json(errorResponse(
+            2,
+            SERVER_ERROR,
+            err
+        ));
+    }
+};
