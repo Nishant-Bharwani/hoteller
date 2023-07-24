@@ -1,6 +1,7 @@
 import { Inter, Nunito } from 'next/font/google';
 import ClientOnly from './components/ClientOnly';
 import Modal from './components/shared/modals/Modal';
+import RegisterModal from './components/shared/modals/RegisterModal';
 import Navbar from './components/shared/navbar/Navbar';
 import './globals.css';
 
@@ -20,7 +21,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={font.className}>
         <ClientOnly>
-          <Modal isOpen />
+          <RegisterModal />
           <Navbar />
         </ClientOnly>
         {children}
