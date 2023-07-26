@@ -6,3 +6,4 @@
 /backend/logs
 /backend/public/uploads
 /frontend
+/client/.env

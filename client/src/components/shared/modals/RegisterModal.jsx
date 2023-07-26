@@ -1,11 +1,11 @@
-import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { AiFillGithub } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
 
 import { useState } from 'react';
-import { toast } from 'react-hot-toast';
+import { toast } from 'react-toastify';
 import useRegisterModal from '../../../hooks/useRegisterModal';
+import { registerUser } from '../../../http/index';
 import Button from '../../primitives/Button';
 import Heading from '../../primitives/Heading';
 import ImageInput from '../../primitives/ImageInput';
@@ -33,13 +33,26 @@ const RegisterModal = () => {
 
     const onSubmit = async (data) => {
         setIsLoading(true);
+        console.log(data);
 
+        const [year, month, day] = data.dob.split("-");
+        data.dob = `${day}-${month}-${year}`;
         // Axios req
         try {
-            await axios.post('/api/register', data);
+            await registerUser(data);
             registerModal.onClose();
         } catch (err) {
-            toast.error("Something went wrong");
+            console.log(err);
+            toast.error("Something went wrong", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
         } finally {
             setIsLoading(false);
         }
@@ -64,9 +77,9 @@ const RegisterModal = () => {
 
     const footerContent = (
         <div className='flex flex-col gap-4 mt-3'>
-            <div class="inline-flex items-center justify-center w-full">
-                <hr class="w-full h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
-                <span class="absolute px-3 font-large text-sky-500 -translate-x-1/2 bg-white left-1/2 ">OR</span>
+            <div className="inline-flex items-center justify-center w-full">
+                <hr className="w-full h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
+                <span className="absolute px-3 font-large text-sky-500 -translate-x-1/2 bg-white left-1/2 ">OR</span>
             </div>
             <Button
                 outline
