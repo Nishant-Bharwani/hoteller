@@ -1,5 +1,4 @@
-'use client';
-import Container from '../container/Container';
+import Container from '../shared/container/Container';
 import Logo from './Logo';
 import Search from './Search';
 import UserMenu from './UserMenu';
