@@ -4,42 +4,33 @@ import { FcGoogle } from 'react-icons/fc';
 
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import useLoginModal from '../../../hooks/useLoginModal';
 import useRegisterModal from '../../../hooks/useRegisterModal';
-import { registerUser } from '../../../http/index';
+import { loginUser, registerUser } from '../../../http/index';
 import Button from '../../primitives/Button';
 import Heading from '../../primitives/Heading';
-import ImageInput from '../../primitives/ImageInput';
 import Input from '../../primitives/Input';
 import Modal from './Modal';
 
 
-const RegisterModal = () => {
+const LoginModal = () => {
     const registerModal = useRegisterModal();
+    const loginModal = useLoginModal();
     const [isLoading, setIsLoading] = useState(false);
 
     const { register, handleSubmit, formState: { errors } } = useForm({
         defaultValues: {
-            username: '',
-            email: '',
+            usernameOrEmail: '',
             password: '',
-            fullname: '',
-            phone: '',
-            dob: '',
-            gender: '',
-            address: '',
-            avatar: ''
         }
     });
 
     const onSubmit = async (_data) => {
         setIsLoading(true);
-        console.log(_data);
 
-        const [year, month, day] = _data.dob.split("-");
-        _data.dob = `${day}-${month}-${year}`;
         // Axios req
         try {
-            const { data } = await registerUser(_data);
+            const { data } = await loginUser(_data);
             toast.success(data.result.message, {
                 position: "top-right",
                 autoClose: 5000,
@@ -50,10 +41,10 @@ const RegisterModal = () => {
                 progress: undefined,
                 theme: "light",
             });
-            registerModal.onClose();
+            loginModal.onClose();
         } catch (err) {
-            console.log(err);
-            toast.error(err.message, {
+
+            toast.error(err.response.data.result.error, {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -70,17 +61,9 @@ const RegisterModal = () => {
 
     const bodyContent = (
         <div className='flex flex-col gap-4'>
-            <Heading title='Become a Hoteller now!' subtitle='Create a account' />
-            <Input id="username" label="Enter your username" disabled={isLoading} register={register} errors={errors} required />
-            <Input id="email" label="Enter your email address" disabled={isLoading} register={register} errors={errors} required />
-            <Input id="fullname" label="Enter your Full Name" disabled={isLoading} register={register} errors={errors} required />
-            <Input id="phone" label="Enter your Phone (optional)" disabled={isLoading} register={register} errors={errors} />
+            <Heading title='Welcome back!' subtitle='Login to your account' />
+            <Input id="usernameOrEmail" label="Enter your username or email" disabled={isLoading} register={register} errors={errors} required />
             <Input id="password" label="Enter your Password" type='password' disabled={isLoading} register={register} errors={errors} required />
-            <Input id="dob" label="Enter your Date of Birth" type='date' disabled={isLoading} register={register} errors={errors} required />
-
-            <Input id="gender" label="Enter your Gender" disabled={isLoading} register={register} errors={errors} required />
-            <Input id="address" label="Enter your Address" disabled={isLoading} register={register} errors={errors} required />
-            <ImageInput id="avatar" label="Select your Avatar" type='file' disabled={isLoading} register={register} errors={errors} required multiple />
 
         </div>
     );
@@ -115,10 +98,10 @@ const RegisterModal = () => {
 
     return (
         <div>
-            <Modal disabled={isLoading} isOpen={registerModal.isOpen} title="Register" actionLabel="Continue" onClose={registerModal.onClose} body={bodyContent} onSubmit={handleSubmit(onSubmit)}
+            <Modal disabled={isLoading} isOpen={loginModal.isOpen} title="Login" actionLabel="Continue" onClose={loginModal.onClose} body={bodyContent} onSubmit={handleSubmit(onSubmit)}
                 footer={footerContent} />
         </div>
     );
 }
 
-export default RegisterModal;
+export default LoginModal;
