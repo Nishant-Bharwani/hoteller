@@ -82,11 +82,22 @@ class AuthController {
                     role
                 });
 
-                res.status(201).json(successResponse(
-                    0,
-                    'SUCCESS',
-                    'User registered successful', new UserDto(user)
-                ));
+                // res.status(201).json(successResponse(
+                //     0,
+                //     'SUCCESS',
+                //     'User registered successful', new UserDto(user)
+                // ));
+
+                const emailVerificationToken = user.getEmailVerificationToken();
+
+                await user.save({ validateBeforeSave: false });
+
+                const url = `${BASE_URL}/auth/verify-email/${emailVerificationToken}`;
+                const subjects = 'User Email Verification';
+                const message = 'Click below link to verify your email. If you have not requested this email simply ignore this email.';
+                const title = 'Verify Your Email';
+
+                sendEmail(res, user, url, subjects, message, title);
 
             } else {
                 // Delete image
@@ -375,12 +386,14 @@ class AuthController {
                 user.emailVerificationToken = undefined;
                 user.emailVerificationExpire = undefined;
                 user.verified = true;
+                user.status = 'login';
                 await user.save();
 
                 res.status(200).json(successResponse(
                     0,
                     'SUCCESS',
-                    'User email verification successful'
+                    'User email verification successful',
+                    new UserDto(user)
                 ));
             } else {
                 return res.status(400).json(errorResponse(

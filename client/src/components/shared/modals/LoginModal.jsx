@@ -2,11 +2,13 @@ import { useForm } from 'react-hook-form';
 import { AiFillGithub } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import useLoginModal from '../../../hooks/useLoginModal';
 import useRegisterModal from '../../../hooks/useRegisterModal';
-import { loginUser, registerUser } from '../../../http/index';
+import { loginUser } from '../../../http/index';
+import { setAuth } from '../../../store/authSlice';
 import Button from '../../primitives/Button';
 import Heading from '../../primitives/Heading';
 import Input from '../../primitives/Input';
@@ -17,6 +19,8 @@ const LoginModal = () => {
     const registerModal = useRegisterModal();
     const loginModal = useLoginModal();
     const [isLoading, setIsLoading] = useState(false);
+
+    const dispatch = useDispatch();
 
     const { register, handleSubmit, formState: { errors } } = useForm({
         defaultValues: {
@@ -31,6 +35,8 @@ const LoginModal = () => {
         // Axios req
         try {
             const { data } = await loginUser(_data);
+            console.log(data.result.data);
+            dispatch(setAuth(data.result));
             toast.success(data.result.message, {
                 position: "top-right",
                 autoClose: 5000,
@@ -43,7 +49,6 @@ const LoginModal = () => {
             });
             loginModal.onClose();
         } catch (err) {
-
             toast.error(err.response.data.result.error, {
                 position: "top-right",
                 autoClose: 5000,
@@ -58,6 +63,11 @@ const LoginModal = () => {
             setIsLoading(false);
         }
     };
+
+    const toggle = useCallback(() => {
+        loginModal.onClose();
+        registerModal.onOpen();
+    }, [loginModal, registerModal]);
 
     const bodyContent = (
         <div className='flex flex-col gap-4'>
@@ -89,8 +99,8 @@ const LoginModal = () => {
 
             <div className='text-neutral-500 text-center mt-4 font-light'>
                 <div className='flex flex-row justify-center items-center gap-2'>
-                    <div>Already have an account? </div>
-                    <div onClick={registerModal.onClose} className='text-neutral-800 cursor-pointer hover:underline'>Login </div>
+                    <div>New User to Hoteller? </div>
+                    <div onClick={toggle} className='text-neutral-800 cursor-pointer hover:underline'>Create an account</div>
                 </div>
             </div>
         </div>

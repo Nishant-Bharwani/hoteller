@@ -1,7 +1,12 @@
 import { useCallback, useState } from 'react';
 import { AiOutlineMenu } from 'react-icons/ai';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import useLoginModal from '../../hooks/useLoginModal';
 import useRegisterModal from '../../hooks/useRegisterModal';
+import { logoutUser } from '../../http';
+import { setAuth } from '../../store/authSlice';
 import Avatar from '../shared/avatar/Avatar';
 import MenuItem from './MenuItem';
 
@@ -9,10 +14,43 @@ const UserMenu = () => {
     const registerModal = useRegisterModal();
     const loginModal = useLoginModal();
     const [isOpen, setIsOpen] = useState(false);
+    const { user } = useSelector((state) => state.persistedAuthReducer);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const toggleOpen = useCallback(() => {
         setIsOpen((prev) => !prev);
     }, []);
+
+
+    const handleLogout = async () => {
+        try {
+            await logoutUser();
+            dispatch(setAuth({ user: null }));
+            toast.success("Logout successull", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            navigate('/');
+        } catch (err) {
+            toast.error(err.response.data.result.error, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        }
+    };
 
     return (
         <div className="relative">
@@ -31,10 +69,17 @@ const UserMenu = () => {
             {isOpen && (
                 <div className='absolute rounded-xl shadow-md w-[40vw] md:w-3/4 bg-white overflow-hidden right-0 top-12 text-sm'>
                     <div className='flex flex-col cursor-pointer'>
-                        <>
+                        {!(user?.status === 'login') ? (<>
                             <MenuItem onClick={loginModal.onOpen} label="Login" />
                             <MenuItem onClick={registerModal.onOpen} label="Sign up" />
-                        </>
+                        </>) : (
+                            <>
+                                <MenuItem label="My bookings" />
+                                <MenuItem label="My profile" />
+                                <MenuItem onClick={handleLogout} label="Logout" />
+                            </>
+
+                        )}
                     </div>
                 </div>
             )}

@@ -2,6 +2,7 @@ const nodemailer = require('nodemailer');
 const { NODEMAILER_EMAIL_ADDRESS, NODEMAILER_APP_GENERATED_PASSWORD } = require('../../config');
 const { successResponse, errorResponse } = require('../configs/api.response');
 const { SERVER_ERROR } = require('../../errors');
+const UserDto = require('../dtos/user.dto');
 
 const sendEmail = async (res, user, url, subjects, message, title) => {
 
@@ -31,9 +32,10 @@ const sendEmail = async (res, user, url, subjects, message, title) => {
         return res.status(200).json(successResponse(
             0,
             'SUCCESS',
-            `Email sent to ${user.email} successful`
+            `Email sent to ${user.email} successful`,
+            new UserDto(user)
         ));
-    } 
+    }
     catch (err) {
         user.resetPasswordToken = undefined;
         user.resetPasswordExpire = undefined;

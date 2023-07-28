@@ -12,7 +12,9 @@ const api = axios.create({
 // List of all Endpoints
 export const registerUser = (data) => api.post('/api/v1/auth/register', data);
 export const loginUser = (data) => api.post('/api/v1/auth/login', data);
-
+export const logoutUser = () => api.post('/api/v1/auth/logout');
+export const sendEmailVerificationLink = () => api.post('/api/v1/auth/send-email-verification-link');
+export const verifyEmail = (token) => api.post(`/api/v1/auth/verify-email/${token}`);
 
 // Interceptors
 
