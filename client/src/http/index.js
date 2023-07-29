@@ -23,6 +23,8 @@ export const getRoomsByHotelSlug = (hotelSlug) => api.get(`/api/v1/room/get-room
 
 export const getRoomByRoomSlugOrId = (slugOrId) => api.get(`/api/v1/room/get-room-by-id-or-slug/${slugOrId}`);
 
+export const bookRoom = (data) => api.post(`/api/v1/booking/book-room`, data);
+
 // Interceptors
 
 // api.interceptors.response.use(
