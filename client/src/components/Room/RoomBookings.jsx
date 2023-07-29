@@ -20,7 +20,7 @@ const RoomBookings = ({ price, status, dateRange, totalPrice, onChangeDate, onSu
             <Calendar value={dateRange} disabledDates={disabledDates} onChange={(value) => onChangeDate(value.selection)} />
             <hr />
             <div className='p-4'>
-                <Button disabled={disabled || status !== 'available'} label="Book Now" onClick={onSubmit} />
+                <Button disabled={disabled} label="Book Now" onClick={onSubmit} />
             </div>
             <div className='p-4 flex flex-row items-center justify-between font-semibold text-lg'>
                 <div>Total:</div>

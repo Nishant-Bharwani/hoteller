@@ -92,7 +92,7 @@ class AuthController {
 
                 await user.save({ validateBeforeSave: false });
 
-                const url = `${BASE_URL}/auth/verify-email/${emailVerificationToken}`;
+                const url = `${"http://localhost:3000"}/auth/verify-email/${emailVerificationToken}`;
                 const subjects = 'User Email Verification';
                 const message = 'Click below link to verify your email. If you have not requested this email simply ignore this email.';
                 const title = 'Verify Your Email';

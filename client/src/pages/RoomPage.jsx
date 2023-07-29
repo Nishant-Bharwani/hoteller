@@ -3,11 +3,12 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Room from '../components/Room/Room';
-import { getRoomByRoomSlugOrId } from '../http';
+import { getBookingsByRoomId, getRoomByRoomSlugOrId } from '../http';
 
 const RoomPage = () => {
-    const { hotelId, roomSlug } = useParams();
+    const { roomSlug } = useParams();
     const [roomData, setRoomData] = useState(null);
+    const [bookings, setBookings] = useState([]);
 
     const { user } = useSelector((state) => state.persistedAuthReducer);
     useEffect(() => {
@@ -19,7 +20,7 @@ const RoomPage = () => {
                 console.log(roomData);
             } catch (err) {
                 console.log(err);
-                toast.error(err.response.data.result.error, {
+                toast.error(err?.response?.data?.result?.error || "Unable to get Room information", {
                     position: "top-right",
                     autoClose: 5000,
                     hideProgressBar: false,
@@ -32,12 +33,23 @@ const RoomPage = () => {
             }
         };
 
+        const getBookings = async () => {
+            try {
+                const { data } = await getBookingsByRoomId(roomData?._id);
+                setBookings(data?.result?.data);
+            } catch (err) {
+                console.log(err);
+                setBookings([]);
+            }
+        }
+
         handleGetRoom();
+        getBookings();
     }, []);
 
     return (
         <div className='pb-20 pt-40'>
-            <Room data={roomData} user={user} />
+            <Room data={roomData} user={user} bookings={bookings} />
         </div>
     )
 }

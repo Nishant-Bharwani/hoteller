@@ -139,6 +139,49 @@ class BookingController {
         }
 
     };
+
+    async getBookingsByRoomId(req, res) {
+        try {
+            const roomId = req.params.roomId;
+
+            if (!roomId) {
+                return res.status(400).json(errorResponse(
+                    1,
+                    'FAILED',
+                    '`roomId` field is required '
+                ));
+            }
+
+            const room = await RoomModel.findById(roomId);
+
+            if (!room) {
+                return res.status(404).json(errorResponse(
+                    4,
+                    'UNKNOWN ACCESS',
+                    'Room does not exist'
+                ));
+            }
+
+            const bookings = await BookingModel.find({
+                roomId
+            });
+
+            res.status(200).json(successResponse(
+                0,
+                'SUCCESS',
+                'Bookings successfullly retrieved',
+                bookings
+            ));
+        } catch (err) {
+            res.status(500).json(errorResponse(
+                2,
+                SERVER_ERROR,
+                err
+            ));
+        }
+
+
+    }
 };
 
 module.exports = new BookingController();

@@ -20,6 +20,7 @@ const Room = ({ data, user, bookings = [] }) => {
     console.log(data);
     const loginModal = useLoginModal();
     const navigate = useNavigate();
+    console.log(bookings);
     const disabledDates = useMemo(() => {
         let dates = [];
         bookings.forEach((booking) => {
