@@ -13,7 +13,7 @@ const limiter = rateLimit({
     message: {
         message: 'Too many login attempts from this IP, please try again after a 60-second pause'
     },
-    handler: async(req, res, _next, options) => {
+    handler: async (req, res, _next, options) => {
         try {
             const LOGS_FOLDER = `${appRoot}/logs/limiter`;
 
@@ -25,11 +25,17 @@ const limiter = rateLimit({
                 fs.mkdirSync(LOGS_FOLDER);
             }
 
-            const apiLimiterRotator = FileStreamRotator.getStream({
-                date_format: 'YYYY-MM-DD',
-                filename: path.join(LOGS_FOLDER, 'app-limiter-%DATE%.log'),
-                frequency: 'daily',
-                verbose: 'false'
+            // const apiLimiterRotator = FileStreamRotator.getStream({
+            //     date_format: 'YYYY-MM-DD',
+            //     filename: path.join(LOGS_FOLDER, 'app-limiter-%DATE%.log'),
+            //     frequency: 'daily',
+            //     verbose: 'false'
+            // });
+
+            const apiLimiterRotator = rfs.createStream(path.join(LOGS_FOLDER, 'app-limiter-%DATE%.log'), {
+                size: '3M',
+                interval: '1d',
+                compress: 'gzip'
             });
 
             const logMessage = `[${currentDateTime}]\tTITLE: TOO MANY REQUEST\tMETHOD: ${req.method}\tURL: ${req.url}\tCLIENT: ${req.headers['user-agent']}\n`;
@@ -56,7 +62,7 @@ const apiLimiter = rateLimit({
     windowMs: 60 * 1000,
     max: 5,
     message: { message: 'Too many login attempts from this IP, please try again after a 60 second pause' },
-    handler: async(req, res, _next, options) => {
+    handler: async (req, res, _next, options) => {
         try {
             const LOGS_FOLDER = `${appRoot}/logs/limiter`;
 

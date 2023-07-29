@@ -6,7 +6,7 @@ import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
 import useLoginModal from '../../../hooks/useLoginModal';
 import useRegisterModal from '../../../hooks/useRegisterModal';
-import { registerUser, sendEmailVerificationLink } from '../../../http/index';
+import { registerUser } from '../../../http/index';
 import Button from '../../primitives/Button';
 import Heading from '../../primitives/Heading';
 import ImageInput from '../../primitives/ImageInput';

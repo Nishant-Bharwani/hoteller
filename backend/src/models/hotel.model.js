@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { BASE_URL } = require('../../config');
 const Schema = mongoose.Schema;
 
 const hotelSchema = Schema({
@@ -41,7 +42,14 @@ const hotelSchema = Schema({
     hotelImages: [{
         url: {
             type: String,
-            required: [true, 'Hotel image filed is required']
+            required: [true, 'Hotel image filed is required'],
+            get: (image) => {
+                if (image) {
+                    return `${BASE_URL}/${image}`;
+                }
+
+                return image;
+            }
         }
     }],
     hotelReviews: [{
@@ -60,10 +68,10 @@ const hotelSchema = Schema({
         }
     }],
 
-}, { timestamps: true });
+}, { timestamps: true, toJSON: { getters: true } });
 
 
-hotelSchema.pre('save', function(next) {
+hotelSchema.pre('save', function (next) {
     if (this.hotelSlug) {
         this.hotelSlug = this.hotelSlug.replace(/\s/g, '-');
     }

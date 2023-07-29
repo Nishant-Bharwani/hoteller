@@ -16,6 +16,9 @@ export const logoutUser = () => api.post('/api/v1/auth/logout');
 export const sendEmailVerificationLink = () => api.post('/api/v1/auth/send-email-verification-link');
 export const verifyEmail = (token) => api.post(`/api/v1/auth/verify-email/${token}`);
 
+
+export const getAllHotels = () => api.get('/api/v1/hotel/all-hotels-list');
+
 // Interceptors
 
 // api.interceptors.response.use(
