@@ -7,11 +7,11 @@ const fs = require('fs');
 const appRoot = require('app-root-path');
 
 class RoomController {
-    async getRoomsByHotelId(req, res) {
+    async getRoomsByHotelSlug(req, res) {
         try {
-            const hotelId = req.params.hotelId;
+            const hotelSlug = req.params.hotelSlug;
 
-            const hotel = await HotelModel.findById(hotelId);
+            const hotel = await HotelModel.find({ hotelSlug });
             if (!hotel) {
                 return res.status(404).json(errorResponse(
                     4,
@@ -20,10 +20,10 @@ class RoomController {
                 ));
             }
 
-            const roomQuery = new QueryHelper(RoomModel.find({ hotelId: hotel._id }).populate('addedBy', '-password').populate({
+            const roomQuery = new QueryHelper(RoomModel.find({ hotelId: hotel[0]._id }).populate('addedBy', '-password').populate({
                 path: 'roomReviews.userId',
                 select: 'username fullname'
-            }), req.query).search().sort().paginate();
+            }), req.query);
 
             const findRooms = await roomQuery.query;
             res.status(200).json(successResponse(
@@ -240,6 +240,47 @@ class RoomController {
             ));
         }
 
+    }
+
+
+    async getRoomByIdOrSlug(req, res) {
+        try {
+            let room = {};
+
+
+            if (/^[0-9a-fA-F]{24}$/.test(req.params.id)) {
+                room = await RoomModel.findById(req.params.id).populate('addedBy', '-password').populate({
+                    path: 'roomReviews.userId',
+                    select: 'username fullname'
+                });
+            } else {
+                room = await RoomModel.findOne({ roomSlug: req.params.id }).populate('addedBy', '-password').populate({
+                    path: 'roomReviews.userId',
+                    select: 'username fullname'
+                });
+            }
+
+            if (!room) {
+                return res.status(404).json(errorResponse(
+                    4,
+                    'UNKNOWN ACCESS',
+                    'Room does not exist'
+                ));
+            }
+
+            res.status(200).json(successResponse(
+                0,
+                'SUCCESS',
+                'Room information got successfullly retrieved',
+                room
+            ));
+        } catch (err) {
+            res.status(500).json(errorResponse(
+                2,
+                SERVER_ERROR,
+                err
+            ));
+        }
     }
 
 };

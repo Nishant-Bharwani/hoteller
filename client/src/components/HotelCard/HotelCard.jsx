@@ -1,9 +1,10 @@
 import React, { useCallback, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Button from '../primitives/Button';
 import Image from '../primitives/Image';
 
 const HotelCard = ({ data, onAction, disabled, actionLabel, actionId = "", user }) => {
+    const navigate = useNavigate();
     const handleCancel = useCallback((e) => {
         e.stopPropagation();
 
@@ -19,7 +20,7 @@ const HotelCard = ({ data, onAction, disabled, actionLabel, actionId = "", user 
     }, [data?.price]);
 
     return (
-        <Link to={`/hotel/${data.hotelSlug}`} className='col-span-1 cursor-pointer group '>
+        <div onClick={() => navigate(`/hotel/${data.hotelSlug}`)} className='col-span-1 cursor-pointer group '>
             <div className='flex flex-col gap-2 w-full'>
                 <div className='aspect-square w-full relative overflow-hidden rounded-xl'>
                     <Image fill="true" alt={"Hotel"} src={data.hotelImages[0].url} className="object-cover w-full group-hover:scale-110 transition" />
@@ -41,7 +42,7 @@ const HotelCard = ({ data, onAction, disabled, actionLabel, actionId = "", user 
                     <Button disabled={disabled} small label={actionLabel} onClick={handleCancel} />
                 )}
             </div>
-        </Link>
+        </div>
     )
 }
 

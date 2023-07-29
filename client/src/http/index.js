@@ -18,6 +18,10 @@ export const verifyEmail = (token) => api.post(`/api/v1/auth/verify-email/${toke
 
 
 export const getAllHotels = () => api.get('/api/v1/hotel/all-hotels-list');
+export const getHotelByIdOrSlug = (slugOrId) => api.get(`/api/v1/hotel/get-hotel-by-id-or-slug/${slugOrId}`);
+export const getRoomsByHotelSlug = (hotelSlug) => api.get(`/api/v1/room/get-rooms-list-by-hotel-slug/${hotelSlug}`);
+
+export const getRoomByRoomSlugOrId = (slugOrId) => api.get(`/api/v1/room/get-room-by-id-or-slug/${slugOrId}`);
 
 // Interceptors
 

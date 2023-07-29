@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { BASE_URL } = require('../../config');
 
 const roomsSchema = new mongoose.Schema({
     hotelId: {
@@ -46,7 +47,12 @@ const roomsSchema = new mongoose.Schema({
     roomImages: [{
         url: {
             type: String,
-            required: [true, 'Room image filed is required']
+            required: [true, 'Room image filed is required'],
+            get: (image) => {
+                if (image) return `${BASE_URL}/${image}`;
+
+                return image;
+            }
         }
     }],
     roomReviews: [{
@@ -76,9 +82,13 @@ const roomsSchema = new mongoose.Schema({
         required: [true, 'Room created by is required field']
     },
 
-}, { timestamps: true });
+}, {
+    timestamps: true, toJSON: {
+        getters: true
+    }
+});
 
-roomsSchema.pre('save', function(next) {
+roomsSchema.pre('save', function (next) {
     if (this.roomSlug) {
         this.roomSlug = this.roomSlug.replace(/\s/g, '-');
     }
