@@ -23,7 +23,7 @@ const HotelPage = () => {
     }, []);
 
     if (rooms.length === 0) {
-        return <EmptyState title="No such hotel exists" subtitle="Try booking some other hotels available" />
+        return <EmptyState title="No rooms for this hotel" subtitle="Try booking some other hotels available" />
     }
 
     return (

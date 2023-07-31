@@ -26,6 +26,7 @@ const UserMenu = () => {
     const handleLogout = async () => {
         try {
             await logoutUser();
+            console.log("JJJ");
             dispatch(setAuth({ user: null }));
             toast.success("Logout successull", {
                 position: "top-right",
@@ -39,7 +40,8 @@ const UserMenu = () => {
             });
             navigate('/');
         } catch (err) {
-            toast.error(err.response.data.result.error, {
+            console.log(err);
+            toast.error(err?.response?.data?.result?.error, {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -74,7 +76,7 @@ const UserMenu = () => {
                             <MenuItem onClick={registerModal.onOpen} label="Sign up" />
                         </>) : (
                             <>
-                                <MenuItem label="My bookings" />
+                                <MenuItem label="My bookings" onClick={() => navigate('/user/bookings')} />
                                 <MenuItem label="My profile" />
                                 <MenuItem onClick={handleLogout} label="Logout" />
                             </>

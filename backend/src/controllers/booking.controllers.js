@@ -91,7 +91,6 @@ class BookingController {
 
 
 
-            console.log(checkIn, checkOut);
             const millisecondsPerDay = 24 * 60 * 60 * 1000;
             let numberOfDays = Math.ceil((checkOutDate - checkInDate) / (millisecondsPerDay));
 
@@ -106,7 +105,6 @@ class BookingController {
             for (const addon of selectedAddons) {
                 total += addon.price;
             }
-            console.log(total);
             const bookingData = {
                 userId: user._id,
                 roomId,
@@ -181,6 +179,57 @@ class BookingController {
         }
 
 
+    }
+
+    async getBookingsByUserId(req, res) {
+        try {
+            const { user } = req;
+            const userId = req.params.userId;
+
+            if (!user) {
+                return res.status(404).json(errorResponse(
+                    4,
+                    'UNKNOWN ACCESS',
+                    'Unauthorized access. Please login to continue'
+                ));
+            }
+
+            if (user._id.toString() !== userId) {
+                return res.status(403).json(errorResponse(
+                    3,
+                    'ACCESS FORBIDDEN',
+                    'Accessing the page or resource you were trying to reach is forbidden'
+                ));
+            }
+
+            const bookings = await BookingModel.find({
+                userId
+            }).populate({
+                path: 'roomId',
+                populate: {
+                    path: 'hotelId',
+                    populate: {
+                        path: 'city',
+                        select: 'name state -_id'
+                    }
+                }
+            })
+
+
+            res.status(201).json(successResponse(
+                0,
+                'SUCCESS',
+                'Bookings got successfully retrieved',
+                bookings
+            ));
+
+        } catch (err) {
+            res.status(500).json(errorResponse(
+                2,
+                SERVER_ERROR,
+                err
+            ));
+        }
     }
 };
 

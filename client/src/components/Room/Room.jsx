@@ -34,7 +34,7 @@ const Room = ({ data, user, bookings = [] }) => {
 
         return dates;
     }, [bookings]);
-
+    // console.log(disabledDates);
     const [isLoading, setIsLoading] = useState(false);
     const [totalPrice, setTotalPrice] = useState(data?.roomPrice);
     const [dateRange, setDateRange] = useState(intialDateRange);

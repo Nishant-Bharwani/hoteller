@@ -26,30 +26,33 @@ export const getRoomByRoomSlugOrId = (slugOrId) => api.get(`/api/v1/room/get-roo
 export const bookRoom = (data) => api.post(`/api/v1/booking/book-room`, data);
 export const getBookingsByRoomId = (roomId) => api.get(`api/v1/booking/get-bookings-by-room-id/${roomId}`);
 
+
+export const getBookingsByUserId = (userId) => api.get(`api/v1/booking/get-bookings-by-user-id/${userId}`);
+
 // Interceptors
 
-// api.interceptors.response.use(
-//     (config) => {
-//         return config;
-//     },
-//     async (error) => {
-//         const orignalRequest = error.config;
+api.interceptors.response.use(
+    (config) => {
+        return config;
+    },
+    async (error) => {
+        const orignalRequest = error.config;
 
-//         if (error.response.status === 401 && orignalRequest && !orignalRequest.isRetry) {
-//             orignalRequest.isRetry = true;
-//             try {
-//                 await axios.get(`${process.env.REACT_APP_API_URL}/api/auth/refresh`, {
-//                     withCredentials: true
-//                 });
+        if (error.response.status !== 200 && orignalRequest && !orignalRequest.isRetry) {
+            orignalRequest.isRetry = true;
+            try {
+                await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/auth/refresh-token`, {
+                    withCredentials: true
+                });
 
-//                 return api.request(orignalRequest);
-//             } catch (err) {
-//                 console.log(err.message);
-//             }
-//         }
+                return api.request(orignalRequest);
+            } catch (err) {
+                console.log(err.message);
+            }
+        }
 
-//         throw error;
-//     }
-// );
+        throw error;
+    }
+);
 
 export default api;

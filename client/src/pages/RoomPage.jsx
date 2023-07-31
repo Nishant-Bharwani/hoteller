@@ -33,19 +33,24 @@ const RoomPage = () => {
             }
         };
 
+
+
+        handleGetRoom();
+    }, []);
+
+    useEffect(() => {
         const getBookings = async () => {
             try {
                 const { data } = await getBookingsByRoomId(roomData?._id);
                 setBookings(data?.result?.data);
+                console.log(bookings);
             } catch (err) {
                 console.log(err);
-                setBookings([]);
             }
         }
 
-        handleGetRoom();
         getBookings();
-    }, []);
+    }, [roomData?._id]);
 
     return (
         <div className='pb-20 pt-40'>

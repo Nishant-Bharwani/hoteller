@@ -421,7 +421,6 @@ class AuthController {
                     'User does not exist'
                 ));
             }
-            console.log(user);
             const { accessToken, refreshToken } = tokenService.generateTokens({ userId: user._id });
             await tokenService.updateRefreshToken(user._id, refreshToken);
 

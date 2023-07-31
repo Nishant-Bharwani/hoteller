@@ -35,6 +35,7 @@ exports.isAuthenticatedUser = async (req, res, next) => {
             ));
         }
 
+
         if (user.status === 'login') {
             req.user = user;
             next();
@@ -135,7 +136,6 @@ exports.isRefreshTokenValid = async (req, res, next) => {
         let userData;
 
         userData = await tokenService.verifyRefreshToken(RefreshToken);
-        console.log(userData);
         if (!userData) {
             return res.status(404).json(errorResponse(
                 11,
