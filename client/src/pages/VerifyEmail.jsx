@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Container from '../components/shared/container/Container';
 import { verifyEmail } from '../http';
@@ -9,6 +9,8 @@ import { setAuth } from '../store/authSlice';
 const VerifyEmail = () => {
     const { token } = useParams();
     const dispatch = useDispatch();
+
+    const navigate = useNavigate();
     useEffect(() => {
         const handleVerifyEmail = async () => {
             try {
@@ -24,6 +26,7 @@ const VerifyEmail = () => {
                     progress: undefined,
                     theme: "light",
                 });
+                navigate('/')
             } catch (err) {
                 console.log(err);
                 toast.error("Email verification unsuccessfull", {

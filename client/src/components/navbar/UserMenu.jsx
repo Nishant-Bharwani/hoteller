@@ -26,7 +26,6 @@ const UserMenu = () => {
     const handleLogout = async () => {
         try {
             await logoutUser();
-            console.log("JJJ");
             dispatch(setAuth({ user: null }));
             toast.success("Logout successull", {
                 position: "top-right",

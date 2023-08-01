@@ -4,7 +4,7 @@ const { JWT_TOKEN_COOKIE_EXPIRES } = require('../../config');
 const UserDto = require('../dtos/user.dto');
 
 
-const loginResponse = async (res, user, maintenance) => {
+const loginResponse = async (res, user, fromEmailVerification = false, maintenance) => {
     const { accessToken, refreshToken } = tokenService.generateTokens({ userId: user._id });
 
     const cookieOptions = {
@@ -26,7 +26,7 @@ const loginResponse = async (res, user, maintenance) => {
             refresh_token: refreshToken,
             result: {
                 title: 'SUCCESS',
-                message: 'User login successful',
+                message: !fromEmailVerification ? 'User login successful' : 'User email verification successful',
                 data: new UserDto(user)
             }
         });

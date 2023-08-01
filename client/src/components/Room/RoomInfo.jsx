@@ -12,14 +12,13 @@ const RoomInfo = ({ user, type, size, capacity, status, price, addedBy }) => {
                 </div>
 
                 <div className='flex flex-row items-center gap-4 font-light text-neutral-500'>
-                    <div>Capacity of {capacity} guests</div>
-                    <div>For {type}</div>
+                    <div>Capacity of <span className='font-bold'>{capacity}</span> guests</div>
+                    <div>For <span className='font-bold'>{type}</span></div>
                     <div className='flex flex-row items-center gap-1'>
                         <span>At a price of </span>
-                        <BiRupee className='inline-block' />
+
                         <span>
-                            <span className='font-semibold mr-[2px]'>{price}</span>
-                            <span>per night</span>
+                            <span className='font-bold mr-[2px]'>₹ {price} <span className='font-light'> per night</span></span>
                         </span>
                     </div>
                 </div>

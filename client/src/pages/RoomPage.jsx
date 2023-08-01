@@ -15,11 +15,8 @@ const RoomPage = () => {
         const handleGetRoom = async () => {
             try {
                 const { data } = await getRoomByRoomSlugOrId(roomSlug);
-                console.log(data.result.data);
                 setRoomData(data.result.data);
-                console.log(roomData);
             } catch (err) {
-                console.log(err);
                 toast.error(err?.response?.data?.result?.error || "Unable to get Room information", {
                     position: "top-right",
                     autoClose: 5000,
@@ -43,7 +40,6 @@ const RoomPage = () => {
             try {
                 const { data } = await getBookingsByRoomId(roomData?._id);
                 setBookings(data?.result?.data);
-                console.log(bookings);
             } catch (err) {
                 console.log(err);
             }

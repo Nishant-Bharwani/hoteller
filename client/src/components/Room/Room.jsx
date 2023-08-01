@@ -17,10 +17,8 @@ const intialDateRange = {
 };
 
 const Room = ({ data, user, bookings = [] }) => {
-    console.log(data);
     const loginModal = useLoginModal();
     const navigate = useNavigate();
-    console.log(bookings);
     const disabledDates = useMemo(() => {
         let dates = [];
         bookings.forEach((booking) => {
@@ -79,6 +77,7 @@ const Room = ({ data, user, bookings = [] }) => {
                 progress: undefined,
                 theme: "light",
             });
+            navigate('/user/bookings')
         } catch (err) {
 
             toast.error(err?.response?.data?.result?.error || "Unable to book room", {
@@ -104,7 +103,6 @@ const Room = ({ data, user, bookings = [] }) => {
                 dateRange.endDate,
                 dateRange.startDate
             );
-            console.log(dayCount);
             if (dayCount && data?.roomPrice) {
                 setTotalPrice(dayCount * data?.roomPrice);
             } else {

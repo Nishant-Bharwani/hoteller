@@ -15,10 +15,6 @@ const HotelCard = ({ data, onAction, disabled, actionLabel, actionId = "", user 
     }, [onAction, actionId, disabled]);
 
 
-    const price = useMemo(() => {
-        return data?.price
-    }, [data?.price]);
-
     return (
         <div onClick={() => navigate(`/hotel/${data.hotelSlug}`)} className='col-span-1 cursor-pointer group '>
             <div className='flex flex-col gap-2 w-full'>

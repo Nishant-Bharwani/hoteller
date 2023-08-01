@@ -389,12 +389,14 @@ class AuthController {
                 user.status = 'login';
                 await user.save();
 
-                res.status(200).json(successResponse(
-                    0,
-                    'SUCCESS',
-                    'User email verification successful',
-                    new UserDto(user)
-                ));
+                // res.status(200).json(successResponse(
+                //     0,
+                //     'SUCCESS',
+                //     'User email verification successful',
+                //     new UserDto(user)
+                // ));
+
+                await loginResponse(res, user, true);
             } else {
                 return res.status(400).json(errorResponse(
                     1,
@@ -428,6 +430,8 @@ class AuthController {
                 expires: new Date(Date.now() + JWT_TOKEN_COOKIE_EXPIRES * 24 * 60 * 60 * 1000),
                 httpOnly: true
             }
+
+            console.log(accessToken, refreshToken);
             res
                 .status(200)
                 .cookie('AccessToken', accessToken, cookieOptions)

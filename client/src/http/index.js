@@ -24,10 +24,11 @@ export const getRoomsByHotelSlug = (hotelSlug) => api.get(`/api/v1/room/get-room
 export const getRoomByRoomSlugOrId = (slugOrId) => api.get(`/api/v1/room/get-room-by-id-or-slug/${slugOrId}`);
 
 export const bookRoom = (data) => api.post(`/api/v1/booking/book-room`, data);
-export const getBookingsByRoomId = (roomId) => api.get(`api/v1/booking/get-bookings-by-room-id/${roomId}`);
+export const getBookingsByRoomId = (roomId) => api.get(`/api/v1/booking/get-bookings-by-room-id/${roomId}`);
 
 
-export const getBookingsByUserId = (userId) => api.get(`api/v1/booking/get-bookings-by-user-id/${userId}`);
+export const getBookingsByUserId = (userId) => api.get(`/api/v1/booking/get-bookings-by-user-id/${userId}`);
+export const cancelBooking = (bookingId) => api.delete(`/api/v1/booking/cancel-booking/${bookingId}`);
 
 // Interceptors
 

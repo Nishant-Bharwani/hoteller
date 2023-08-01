@@ -231,6 +231,55 @@ class BookingController {
             ));
         }
     }
+
+    async cancelBooking(req, res) {
+        try {
+            const { user } = req;
+            const userId = user._id.toString();
+            if (!user) {
+                return res.status(404).json(errorResponse(
+                    4,
+                    'UNKNOWN ACCESS',
+                    'Unauthorized access. Please login to continue'
+                ));
+            }
+
+            const bookingId = req.params.bookingId;
+            const booking = await BookingModel.findById(bookingId);
+
+            if (!booking) {
+                return res.status(404).json(errorResponse(
+                    4,
+                    'UNKNOWN ACCESS',
+                    'Booking does not exist'
+                ));
+            }
+
+            const room = await RoomModel.findById(booking.roomId);
+
+            if (booking.userId.equals(userId) || room.addedBy.equals(userId)) {
+                await BookingModel.findByIdAndDelete(bookingId);
+                return res.status(201).json(successResponse(
+                    0,
+                    'SUCCESS',
+                    'Bookings deleted successfully',
+                ));
+            } else {
+                return res.status(406).json(errorResponse(
+                    6,
+                    'UNABLE TO ACCESS',
+                    'Accessing the page or resource you were trying to reach is forbidden'
+                ));
+            }
+        } catch (err) {
+            return res.status(500).json(errorResponse(
+                2,
+                SERVER_ERROR,
+                err
+            ));
+        }
+
+    }
 };
 
 module.exports = new BookingController();

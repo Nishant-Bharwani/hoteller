@@ -44,7 +44,7 @@ const ImageInput = ({ type = "file", id, label, multiple, disabled, required, re
                 {...register(id, { required })}
                 onChange={handleImageChange}
             />
-            {selectedImage && <Image alt="Upload avatar" fill style={{ objectFit: 'cover' }} src={selectedImage} />}
+            {selectedImage && <Image alt="Upload avatar" fill="true" style={{ objectFit: 'cover' }} src={selectedImage} />}
         </div>
     );
 };

@@ -1,9 +1,10 @@
-import React, { useCallback, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
-import HotelCard from '../HotelCard/HotelCard'
-import Heading from '../primitives/Heading'
-import Container from '../shared/container/Container'
+import React, { useCallback, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { cancelBooking } from '../../http';
+import RoomCard from '../RoomCard/RoomCard';
+import Heading from '../primitives/Heading';
+import Container from '../shared/container/Container';
 
 const Bookings = ({ bookings, user }) => {
     const navigate = useNavigate();
@@ -12,14 +13,34 @@ const Bookings = ({ bookings, user }) => {
     const onCancel = useCallback((id) => {
         setDeletingId(id);
 
-        try {
-            // axios.delete()
-            // console.log(deletingId);
-        } catch (err) {
-            toast.error("kk");
-        } finally {
-            setDeletingId('');
+
+        const handleCancelBooking = async () => {
+            try {
+                console.log(id);
+                console.log(deletingId);
+                const { data } = await cancelBooking(id);
+                console.log(deletingId);
+                console.log(data.result.message);
+                window.location.reload();
+            } catch (err) {
+                console.log(err);
+                toast.error(err?.response?.data?.result?.error, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
+            } finally {
+                setDeletingId('');
+            }
         }
+
+        handleCancelBooking();
+
     }, []);
 
     return (
@@ -29,7 +50,7 @@ const Bookings = ({ bookings, user }) => {
 
                 <div className='mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8'>
                     {bookings.map((booking) => (
-                        <HotelCard key={booking._id} data={booking.roomId.hotelId} user={user} />
+                        <RoomCard key={booking._id} data={booking.roomId} user={user} actionId={booking._id} onAction={onCancel} disabled={deletingId === booking._id} actionLabel="Cancel Booking" booking={booking} />
                     ))}
                 </div>
             </Container>
