@@ -71,10 +71,14 @@ const hotelSchema = Schema({
 }, { timestamps: true, toJSON: { getters: true } });
 
 
+
+
+
 hotelSchema.pre('save', function (next) {
     if (this.hotelSlug) {
         this.hotelSlug = this.hotelSlug.replace(/\s/g, '-');
     }
+
     next();
 
 });

@@ -18,6 +18,8 @@ class HotelController {
 
             const findHotels = await hotelQuery.query;
 
+
+
             res.status(200).json(successResponse(
                 0,
                 'SUCCESS',
@@ -43,36 +45,41 @@ class HotelController {
 
     async getHotelsByCityName(req, res) {
         try {
-            const cityName = req.params.city;
+            const hotels = await HotelModel.find();
+            const cityName = req.query.city;
 
             const city = await CityModel.findOne({ name: cityName });
-            if (!city) {
-                return res.status(404).json(errorResponse(
-                    4,
-                    'UNKNOWN ACCESS',
-                    'City does not exist'
-                ));
-            }
+            // if (!city) {
+            //     return res.status(404).json(errorResponse(
+            //         4,
+            //         'UNKNOWN ACCESS',
+            //         'City does not exist'
+            //     ));
+            // }
 
-            const hotelQuery = new QueryHelper(HotelModel.find({ city: city._id }).populate('addedBy', '-password').populate({
+            // const hotelQuery = new QueryHelper(HotelModel.find().populate('addedBy', '-password').populate({
+            //     path: 'hotelReviews.userId',
+            //     select: 'username fullname'
+            // }), req.query).search('city.name').sort().paginate();
+            const hotelQuery = new QueryHelper(HotelModel.find({ city: city?._id }).populate('addedBy', '-password').populate({
                 path: 'hotelReviews.userId',
                 select: 'username fullname'
-            }).populate('city'), req.query).search('name').sort().paginate();
+            }).populate('city'), req.query).search().sort().paginate();
 
             const findHotels = await hotelQuery.query;
-            
+
+
             res.status(200).json(successResponse(
                 0,
                 'SUCCESS',
-                'Hotels list data found successfully',
-                // {
-                //     rows: findHotels,
-                //     total_rows: hotels.length,
-                //     response_rows: findHotels.length,
-                //     total_page: req?.query?.keyword ? Math.ceil(findHotels.length / req.query.limit) : Math.ceil(hotels.length / req.query.limit),
-                //     current_page: req?.query?.page ? parseInt(req.query.page, 10) : 1
-                // }
-                findHotels
+                `Hotels list data found successfully for city`,
+                {
+                    rows: findHotels,
+                    total_rows: hotels.length,
+                    response_rows: findHotels.length,
+                    total_page: req?.query?.city ? Math.ceil(findHotels.length / req.query.limit) : Math.ceil(hotels.length / req.query.limit),
+                    current_page: req?.query?.page ? parseInt(req.query.page, 10) : 1
+                },
             ));
 
 
@@ -234,7 +241,7 @@ class HotelController {
                 facilities,
                 hotelImages: req?.files?.map((file) => ({ url: `/uploads/rooms/${file.filename}` })),
                 addedBy: req?.user?._id
-                
+
             });
 
             res.status(201).json(successResponse(

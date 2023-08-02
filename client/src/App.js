@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Navbar from './components/navbar/Navbar';
 import LoginModal from './components/shared/modals/LoginModal';
 import RegisterModal from './components/shared/modals/RegisterModal';
+import SearchModal from './components/shared/modals/SearchModal';
 import BookingsPage from './pages/BookingsPage';
 import Home from './pages/Home';
 import HotelPage from './pages/HotelPage';
@@ -15,6 +16,7 @@ function App() {
       <ToasterProvider />
       <RegisterModal />
       <LoginModal />
+      <SearchModal />
       <Navbar />
 
       <Routes>

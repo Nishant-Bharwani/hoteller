@@ -17,7 +17,53 @@ export const sendEmailVerificationLink = () => api.post('/api/v1/auth/send-email
 export const verifyEmail = (token) => api.post(`/api/v1/auth/verify-email/${token}`);
 
 
-export const getAllHotels = () => api.get('/api/v1/hotel/all-hotels-list');
+export const getAllHotels = (keyword, page, limit, sort) => {
+    let apiUrl = '/api/v1/hotel/all-hotels-list?';
+
+
+    if (keyword) {
+        apiUrl += `&keyword=${encodeURIComponent(keyword)}`;
+    }
+
+    if (page) {
+        apiUrl += `&page=${encodeURIComponent(page)}`;
+    }
+
+    if (limit) {
+        apiUrl += `&limit=${encodeURIComponent(limit)}`;
+    }
+
+    if (sort) {
+        apiUrl += `&sort=${encodeURIComponent(sort)}`;
+    }
+
+    return api.get(apiUrl);
+};
+
+export const getHotelsByCityName = (city, page, limit, sort) => {
+    let apiUrl = '/api/v1/hotel/get-hotel-by-city?';
+
+
+    if (city) {
+        apiUrl += `&city=${encodeURIComponent(city)}`;
+    }
+
+    if (page) {
+        apiUrl += `&page=${encodeURIComponent(page)}`;
+    }
+
+    if (limit) {
+        apiUrl += `&limit=${encodeURIComponent(limit)}`;
+    }
+
+    if (sort) {
+        apiUrl += `&sort=${encodeURIComponent(sort)}`;
+    }
+
+    return api.get(apiUrl);
+}
+
+
 export const getHotelByIdOrSlug = (slugOrId) => api.get(`/api/v1/hotel/get-hotel-by-id-or-slug/${slugOrId}`);
 export const getRoomsByHotelSlug = (hotelSlug) => api.get(`/api/v1/room/get-rooms-list-by-hotel-slug/${hotelSlug}`);
 
@@ -29,6 +75,8 @@ export const getBookingsByRoomId = (roomId) => api.get(`/api/v1/booking/get-book
 
 export const getBookingsByUserId = (userId) => api.get(`/api/v1/booking/get-bookings-by-user-id/${userId}`);
 export const cancelBooking = (bookingId) => api.delete(`/api/v1/booking/cancel-booking/${bookingId}`);
+
+export const getAllCities = () => api.get('/api/v1/city/get-all-cities');
 
 // Interceptors
 

@@ -21,13 +21,14 @@ const authRoute = require('../routes/auth.routes');
 const hotelRoute = require('../routes/hotel.routes');
 const roomRoute = require('../routes/room.routes');
 const bookingRoute = require('../routes/booking.routes');
+const cityRoute = require('../routes/city.routes');
 const corsOptions = require('../configs/cors.config');
 
 
 const app = express();
 
 app.use(limiter);
-app.use(morganLogger());
+// app.use(morganLogger());
 app.use(cookieParser());
 
 const dbConnect = require('../db/connect.mongo.db');
@@ -47,6 +48,7 @@ app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/hotel', hotelRoute);
 app.use('/api/v1/room', roomRoute);
 app.use('/api/v1/booking', bookingRoute);
+app.use('/api/v1/city', cityRoute);
 
 app.use(notFoundRoute);
 app.use(errorHandler);
