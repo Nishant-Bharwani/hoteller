@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import React, { useCallback, useMemo } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Button from '../primitives/Button';
 import Image from '../primitives/Image';
 
@@ -46,7 +46,7 @@ const RoomCard = ({ data, onAction, disabled, actionLabel, actionId = "", user, 
 
                 </div>
 
-                <div onClick={() => booking && navigate(`/room/${data.hotelId}/${data.roomSlug}`)} className='font-semibold text-lg'>{data?.roomName} <span className='font-light'>in</span> {booking && data?.hotelId?.name && (
+                <div onClick={() => booking && navigate(`/room/${data.hotelId}/${data.roomSlug}`)} className='font-semibold text-lg'>{data?.roomName} {booking && <span className='font-light'>in</span>} {booking && data?.hotelId?.name && (
                     <span onClick={() => navigate(data?.hotelId?.hotelSlug ? `/hotel/${data.hotelId.hotelSlug}` : '')} className=' cursor-pointer text-sm'>
                         {data.hotelId.name}
                     </span>)}</div>

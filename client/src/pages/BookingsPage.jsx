@@ -13,9 +13,8 @@ const BookingsPage = () => {
     useEffect(() => {
         const getBookings = async () => {
             try {
-                const { data } = await getBookingsByUserId(user._id);
+                const { data } = await getBookingsByUserId(user?._id);
                 setBookings(data?.result?.data);
-                console.log(bookings);
 
             } catch (err) {
                 console.log(err);
@@ -23,7 +22,7 @@ const BookingsPage = () => {
         }
 
         getBookings();
-    }, [user._id]);
+    }, [user?._id]);
 
 
     if (!user) {

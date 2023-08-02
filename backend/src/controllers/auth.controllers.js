@@ -431,7 +431,6 @@ class AuthController {
                 httpOnly: true
             }
 
-            console.log(accessToken, refreshToken);
             res
                 .status(200)
                 .cookie('AccessToken', accessToken, cookieOptions)

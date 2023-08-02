@@ -145,7 +145,6 @@ exports.isRefreshTokenValid = async (req, res, next) => {
         }
 
         userData = await tokenService.findRefreshToken(userData.userId, RefreshToken);
-        console.log("KK");
         if (!userData) {
             return res.status(404).json(errorResponse(
                 11,
@@ -153,7 +152,6 @@ exports.isRefreshTokenValid = async (req, res, next) => {
                 'JWT token is expired/invalid. Please logout and login again'
             ));
         }
-        console.log("KK");
 
         const user = await UserModel.findById(userData.userId);
         if (!user) {
