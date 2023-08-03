@@ -40,7 +40,7 @@ const UserMenu = () => {
             navigate('/');
         } catch (err) {
             console.log(err);
-            toast.error(err?.response?.data?.result?.error, {
+            toast.error(err?.response?.data?.result?.error || "Something went wrong", {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -76,7 +76,7 @@ const UserMenu = () => {
                         </>) : (
                             <>
                                 <MenuItem label="My bookings" onClick={() => navigate('/user/bookings')} />
-                                <MenuItem label="My profile" />
+                                {/* <MenuItem label="My profile" /> */}
                                 <MenuItem onClick={handleLogout} label="Logout" />
                             </>
 

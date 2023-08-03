@@ -3,6 +3,7 @@ import { AiFillGithub } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
 
 import { useCallback, useState } from 'react';
+import Select from 'react-select';
 import { toast } from 'react-toastify';
 import useLoginModal from '../../../hooks/useLoginModal';
 import useRegisterModal from '../../../hooks/useRegisterModal';
@@ -142,7 +143,21 @@ const RegisterModal = () => {
                 <Input id="password" label="Enter your Password" type='password' disabled={isLoading} register={register} errors={errors} required />
                 <Input id="dob" label="Enter your Date of Birth" type='date' disabled={isLoading} register={register} errors={errors} required />
 
-                <Input id="gender" label="Enter your Gender" disabled={isLoading} register={register} errors={errors} required />
+                {/* <Input id="gender" label="Enter your Gender" disabled={isLoading} register={register} errors={errors} required /> */}
+                {/* <Select name='gender' placeholder='Select your gender' isClearable options={[
+                    { value: 'male', label: 'Male' },
+                    { value: 'female', label: 'Female' },
+                ]} {...register('gender', { required: true })} isDisabled={isLoading} id='gender' className={`${errors['gender'] ? 'border-sky-500' : 'border-neutral-300'} ${errors['gender'] ? 'focus:border-sky-500' : 'focus:border-black'}`}
+                 /> */}
+
+
+                <label htmlFor="gender" className="p-0 block text-sm font-medium text-neutral-500">Select gender</label>
+                <select id="gender" className="border border-sky-500 text-neutral-500 text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5 placeholder-neutral-400" {...register('gender', { required: true })} disabled={isLoading} placeholder='Select your gender'>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+
+
                 <Input id="address" label="Enter your Address" disabled={isLoading} register={register} errors={errors} required />
                 <ImageInput id="avatar" label="Click here to upload your Avatar" type='file' disabled={isLoading} register={register} errors={errors} required multiple />
 

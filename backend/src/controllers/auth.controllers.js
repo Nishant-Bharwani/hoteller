@@ -389,12 +389,6 @@ class AuthController {
                 user.status = 'login';
                 await user.save();
 
-                // res.status(200).json(successResponse(
-                //     0,
-                //     'SUCCESS',
-                //     'User email verification successful',
-                //     new UserDto(user)
-                // ));
 
                 await loginResponse(res, user, true);
             } else {
