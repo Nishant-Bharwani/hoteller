@@ -78,6 +78,8 @@ export const cancelBooking = (bookingId) => api.delete(`/api/v1/booking/cancel-b
 
 export const getAllCities = () => api.get('/api/v1/city/get-all-cities');
 
+export const getAllAddons = () => api.get('/api/v1/addon/get-all-addons');
+
 // Interceptors
 
 api.interceptors.response.use(

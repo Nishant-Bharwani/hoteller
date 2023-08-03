@@ -103,7 +103,7 @@ class BookingController {
             const selectedAddons = await AddonModel.find({ _id: { $in: addons } });
 
             for (const addon of selectedAddons) {
-                total += addon.price;
+                total += (addon.price * numberOfDays);
             }
             const bookingData = {
                 userId: user._id,

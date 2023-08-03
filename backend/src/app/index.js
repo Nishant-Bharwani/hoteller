@@ -22,6 +22,7 @@ const hotelRoute = require('../routes/hotel.routes');
 const roomRoute = require('../routes/room.routes');
 const bookingRoute = require('../routes/booking.routes');
 const cityRoute = require('../routes/city.routes');
+const addonRoute = require('../routes/addon.routes');
 const corsOptions = require('../configs/cors.config');
 
 
@@ -49,6 +50,7 @@ app.use('/api/v1/hotel', hotelRoute);
 app.use('/api/v1/room', roomRoute);
 app.use('/api/v1/booking', bookingRoute);
 app.use('/api/v1/city', cityRoute);
+app.use('/api/v1/addon', addonRoute);
 
 app.use(notFoundRoute);
 app.use(errorHandler);

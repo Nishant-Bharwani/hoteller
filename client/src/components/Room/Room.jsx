@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import useLoginModal from '../../hooks/useLoginModal';
 import { bookRoom } from '../../http';
+import Addons from '../Addons/Addons';
 import Container from '../shared/container/Container';
 import RoomBookings from './RoomBookings';
 import RoomHead from './RoomHead';
@@ -32,25 +33,40 @@ const Room = ({ data, user, bookings = [] }) => {
 
         return dates;
     }, [bookings]);
-    // console.log(disabledDates);
     const [isLoading, setIsLoading] = useState(false);
     const [totalPrice, setTotalPrice] = useState(data?.roomPrice);
     const [dateRange, setDateRange] = useState(intialDateRange);
     const [numberOfGuests, setNumberOfGuests] = useState(1);
+    const [selectedAddons, setSelectedAddons] = useState([]);
+    const [selectedAddonIds, setSelectedAddonIds] = useState([]);
 
     function parseDate(dateString) {
-        const timeZone = "Asia/Kolkata"; // Set your desired time zone here
-
-        // Parse the date string to a JavaScript Date object
+        const timeZone = "Asia/Kolkata";
         const dateObject = new Date(dateString);
-
-        // Convert the date to the desired time zone
         const zonedDate = utcToZonedTime(dateObject, timeZone);
-
-        // Format the date in "dd-MM-yyyy" format for the specified time zone
         const formattedDate = format(zonedDate, "dd-MM-yyyy", { timeZone });
         return formattedDate;
     }
+
+    const handleToggleSelection = (addon) => {
+        setSelectedAddonIds((prevSelectedIds) =>
+            prevSelectedIds.includes(addon?._id)
+                ? prevSelectedIds.filter((id) => { console.log(id); return id !== addon?._id })
+                : [...prevSelectedIds, addon._id]
+        );
+
+
+        const addonId = addon._id;
+        const addonExists = selectedAddons.find((selectedAddon) => selectedAddon._id === addonId);
+
+        if (addonExists) {
+            setSelectedAddons((prevSelectedAddons) =>
+                prevSelectedAddons.filter((selectedAddon) => selectedAddon._id !== addonId)
+            );
+        } else {
+            setSelectedAddons((prevSelectedAddons) => [...prevSelectedAddons, addon]);
+        }
+    };
 
     const createBooking = useCallback(async () => {
         if (!user) {
@@ -63,7 +79,8 @@ const Room = ({ data, user, bookings = [] }) => {
                 roomId: data?._id,
                 checkIn: parseDate(dateRange.startDate),
                 checkOut: parseDate(dateRange.endDate),
-                numberOfGuests
+                numberOfGuests,
+                addons: selectedAddonIds
             });
 
             setDateRange(intialDateRange);
@@ -94,10 +111,13 @@ const Room = ({ data, user, bookings = [] }) => {
             setIsLoading(false);
         }
 
-    }, [data?._id, dateRange.endDate, dateRange.startDate, loginModal, user, numberOfGuests]);
+    }, [navigate, data?._id, dateRange.endDate, dateRange.startDate, loginModal, user, numberOfGuests]);
 
 
     useEffect(() => {
+
+
+
         if (dateRange.startDate && dateRange.endDate) {
             const dayCount = differenceInCalendarDays(
                 dateRange.endDate,
@@ -109,8 +129,17 @@ const Room = ({ data, user, bookings = [] }) => {
                 setTotalPrice(data?.roomPrice);
             }
 
+            let addonPrice = 0;
+            for (let i = 0; i < selectedAddons.length; i++) {
+                addonPrice += selectedAddons[i]?.price;
+            }
+
+            if (addonPrice) setTotalPrice((prev) => prev + (addonPrice * dayCount));
         }
-    }, [dateRange, data?.roomPrice]);
+
+
+        console.log(selectedAddons, selectedAddonIds);
+    }, [selectedAddonIds, selectedAddons, dateRange, data?.roomPrice]);
 
 
     return (
@@ -120,19 +149,24 @@ const Room = ({ data, user, bookings = [] }) => {
                     <RoomHead title={data?.roomName} subtitle={data?.roomDescription} image={data?.roomImages[0].url} id={data?._id} user={user} />
 
                     <div className='grid grid-cols-1 md:grid-cols-7 md:gap-10 mt-6'>
-                        <RoomInfo user={user} type={data?.roomType} size={data?.roomSize} capacity={data?.roomCapacity} status={data?.roomStatus} price={data?.roomPrice} addedBy={
-                            {
-                                fullname: data?.addedBy.fullname,
-                                avatar: data?.addedBy.avatar
-                            }
-                        } />
+                        <div className='col-span-4 flex flex-col gap-8'>
+
+                            <RoomInfo user={user} type={data?.roomType} size={data?.roomSize} capacity={data?.roomCapacity} status={data?.roomStatus} price={data?.roomPrice} addedBy={
+                                {
+                                    fullname: data?.addedBy.fullname,
+                                    avatar: data?.addedBy.avatar
+                                }
+                            } />
+                            <Addons selectedAddons={selectedAddons} onToggleSelection={handleToggleSelection} />
+
+                        </div>
 
                         <div className='order-first mb-10 md:order-last md:col-span-3'>
                             <div className="w-full relative mb-4">
                                 <input id="numberOfGuests" disabled={isLoading}
                                     placeholder="Number of Guests would be arriving" type={"number"} className={`peer w-full p-4 pt-6 font-light bg-white border-2 rounded-md outline-none transition disabled:opacity-70 disabled:cursor-not-allowed `} onChange={(e) => { setNumberOfGuests(e.target.value); console.log(numberOfGuests); }} />
                             </div>
-                            <RoomBookings status={data?.roomStatus} price={data?.roomPrice} totalPrice={totalPrice} onChangeDate={(value) => setDateRange(value)} dateRange={dateRange} onSubmit={createBooking} disabled={isLoading} disabledDates={disabledDates} />
+                            <RoomBookings status={data?.roomStatus} price={data?.roomPrice} totalPrice={totalPrice} onChangeDate={(value) => setDateRange(value)} dateRange={dateRange} onSubmit={createBooking} disabled={isLoading} disabledDates={disabledDates} selectedAddons={selectedAddons} />
                         </div>
                     </div>
                 </div>
