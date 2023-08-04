@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import HotelCard from '../components/HotelCard/HotelCard';
 import EmptyState from '../components/shared/EmptyState';
 import Loader from '../components/shared/Loader/Loader';
+import Pagination from '../components/shared/Pagination';
 import Container from '../components/shared/container/Container';
 import { getAllHotels, getHotelsByCityName } from '../http';
 
@@ -15,6 +16,7 @@ const Home = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [page, setPage] = useState(1);
     const [keyword, setKeyword] = useState('');
+    const [totalPages, setTotalPages] = useState(1);
 
     const city = searchParams.get('city');
 
@@ -23,14 +25,13 @@ const Home = () => {
             try {
                 setIsLoading(true);
                 if (city) {
-                    const { data } = await getHotelsByCityName(city);
-                    console.log(data.result.data.rows);
+                    const { data } = await getHotelsByCityName(city, page, 6, '');
                     setHotels(data?.result?.data?.rows);
+                    setTotalPages(data?.result?.data?.total_page || 1);
                 } else {
-                    const { data } = await getAllHotels(keyword, page, 12, '');
-                    console.log(data);
-                    console.log(data.result.data.rows);
+                    const { data } = await getAllHotels(keyword, page, 6, '');
                     setHotels(data?.result?.data?.rows);
+                    setTotalPages(data?.result?.data?.total_page || 1);
                 }
             } catch (err) {
                 toast.error(err.response.data.result.error, {
@@ -51,7 +52,11 @@ const Home = () => {
 
         handleGetAllHotels();
         console.log(hotels);
-    }, [city, page]);
+    }, [city, page, keyword]);
+
+    const handlePageChange = (newPage) => {
+        setPage(newPage);
+    };
 
     if (isLoading) {
         return <Loader />
@@ -65,7 +70,7 @@ const Home = () => {
     return (
         <div className='pb-20 pt-20'>
             <Container>
-                <div className='flex flex-row items-center justify-between'>
+                <div className='flex flex-col gap-10 items-center justify-between'>
                     <div className='
                 pt-24 
                 grid
@@ -85,7 +90,9 @@ const Home = () => {
                             })
                         }
                     </div>
-                    {/* <Pagination /> */}
+                    <div>
+                        <Pagination currentPage={page} totalPages={totalPages} onPageChange={handlePageChange} />
+                    </div>
                 </div>
             </Container>
         </div>

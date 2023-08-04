@@ -49,13 +49,13 @@ class HotelController {
             const cityName = req.query.city;
 
             const city = await CityModel.findOne({ name: cityName });
-            // if (!city) {
-            //     return res.status(404).json(errorResponse(
-            //         4,
-            //         'UNKNOWN ACCESS',
-            //         'City does not exist'
-            //     ));
-            // }
+            if (!city) {
+                return res.status(404).json(errorResponse(
+                    4,
+                    'UNKNOWN ACCESS',
+                    'City does not exist'
+                ));
+            }
 
             // const hotelQuery = new QueryHelper(HotelModel.find().populate('addedBy', '-password').populate({
             //     path: 'hotelReviews.userId',
