@@ -1,5 +1,9 @@
 // Dotenv
-require('dotenv').config();
+const ENV_PATH = process.env.NODE_ENV === 'production' ? '../.env' : './.env';
+require('dotenv').config({
+    path: ENV_PATH
+});
+
 
 // Neccessary Modules
 const express = require('express');
