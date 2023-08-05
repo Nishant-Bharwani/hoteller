@@ -1,6 +1,9 @@
+const { APP_SERVICE_URL } = require("../../config");
+
 const allowedOrigins = [
     'http://localhost:3000',
-    'http://localhost:3001'
+    'http://localhost:3001',
+    APP_SERVICE_URL
 ];
 
 const corsOptions = {

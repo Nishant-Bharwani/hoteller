@@ -7,7 +7,7 @@ const logger = require('../middlewares/winston.logger');
 const appRoot = require('app-root-path');
 const moment = require('moment');
 const loginResponse = require('../configs/login.response');
-const { BASE_URL, JWT_TOKEN_COOKIE_EXPIRES } = require('../../config');
+const { BASE_URL, JWT_TOKEN_COOKIE_EXPIRES, APP_SERVICE_URL } = require('../../config');
 const sendEmail = require('../configs/send.mail');
 const UserDto = require('../dtos/user.dto');
 const crypto = require('crypto');
@@ -92,7 +92,7 @@ class AuthController {
 
                 await user.save({ validateBeforeSave: false });
 
-                const url = `${"http://localhost:3000"}/auth/verify-email/${emailVerificationToken}`;
+                const url = `${APP_SERVICE_URL}/auth/verify-email/${emailVerificationToken}`;
                 const subjects = 'User Email Verification';
                 const message = 'Click below link to verify your email. If you have not requested this email simply ignore this email.';
                 const title = 'Verify Your Email';

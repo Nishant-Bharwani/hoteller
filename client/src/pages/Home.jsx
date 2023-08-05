@@ -67,7 +67,7 @@ const Home = () => {
     }
 
     return (
-        <div className='pb-[48px]'>
+        <div className='pb-[48px] pt-20'>
             <Container>
                 <div className='flex flex-col gap-4 items-center justify-between'>
                     {/* <SearchBar /> */}

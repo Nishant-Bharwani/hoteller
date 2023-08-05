@@ -9,6 +9,7 @@ const appRoot = require('app-root-path');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const crossOrigin = require('cors');
+const path = require('path');
 
 
 // Middlewares and routes
@@ -30,6 +31,7 @@ const app = express();
 
 app.use(limiter);
 // app.use(morganLogger());
+app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
 app.use(cookieParser());
 
 const dbConnect = require('../db/connect.mongo.db');
@@ -54,4 +56,12 @@ app.use('/api/v1/addon', addonRoute);
 
 app.use(notFoundRoute);
 app.use(errorHandler);
+
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.resolve(__dirname, '../client/build')));
+    app.get("*", (req, res) => {
+        res.sendFile(path.resolve(__dirname, '../client/build/index.html'));
+    })
+}
+
 module.exports = app;
