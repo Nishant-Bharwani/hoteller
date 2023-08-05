@@ -1,5 +1,4 @@
 import React from 'react';
-import Addons from '../Addons/Addons';
 import Calendar from '../Calendar/Calendar';
 import Button from '../primitives/Button';
 
@@ -20,7 +19,7 @@ const RoomBookings = ({ selectedAddons, price, status, dateRange, totalPrice, on
             <Calendar value={dateRange} disabledDates={disabledDates} onChange={(value) => onChangeDate(value.selection)} />
             <hr />
             <div className='p-4'>
-                <Button disabled={disabled} label="Book Now" onClick={onSubmit} />
+                <Button isLoading={disabled} disabled={disabled} label="Book Now" onClick={onSubmit} />
             </div>
 
             {selectedAddons.length !== 0 &&

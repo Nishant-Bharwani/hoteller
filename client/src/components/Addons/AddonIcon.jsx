@@ -3,7 +3,6 @@ import addonIcons from '../../data/addons';
 
 const AddonIcon = ({ isChecked, addonSlug }) => {
     const Icon = addonIcons[addonSlug];
-
     const iconStyle = {
         position: 'relative',
         display: 'inline-block',

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../primitives/Button';
 import Image from '../primitives/Image';
@@ -16,7 +16,7 @@ const HotelCard = ({ data, onAction, disabled, actionLabel, actionId = "", user 
 
 
     return (
-        <div onClick={() => navigate(`/hotel/${data.hotelSlug}`)} className='col-span-1 cursor-pointer group '>
+        <div onClick={() => navigate(`/hotel/${data.hotelSlug}`)} className='col-span-1 cursor-pointer group'>
             <div className='flex flex-col gap-2 w-full'>
                 <div className='aspect-square w-full relative overflow-hidden rounded-xl'>
                     <Image fill="true" alt={"Hotel"} src={data.hotelImages[0].url} className="object-cover w-full group-hover:scale-110 transition" style={{ height: '100%' }} />
@@ -35,7 +35,7 @@ const HotelCard = ({ data, onAction, disabled, actionLabel, actionId = "", user 
                 </div>
 
                 {onAction && actionLabel && (
-                    <Button disabled={disabled} small label={actionLabel} onClick={handleCancel} />
+                    <Button isLoading={disabled} disabled={disabled} small label={actionLabel} onClick={handleCancel} />
                 )}
             </div>
         </div>

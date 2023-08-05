@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { IoMdClose } from 'react-icons/io';
 import Button from "../../primitives/Button";
 
-const Modal = ({ isOpen, onClose, onSubmit, title, body, footer, actionLabel, disabled, secondaryActionLabel, secondaryAction }) => {
+const Modal = ({ isOpen, onClose, onSubmit, title, body, footer, actionLabel, disabled, secondaryActionLabel, secondaryAction, isButtonLoading }) => {
 
     const [showModal, setShowModal] = useState(isOpen);
 
@@ -69,7 +69,7 @@ const Modal = ({ isOpen, onClose, onSubmit, title, body, footer, actionLabel, di
                                     {secondaryAction && secondaryActionLabel && (
                                         <Button outline disabled={disabled} label={secondaryActionLabel} onClick={secondaryAction} />
                                     )}
-                                    <Button disabled={disabled} label={actionLabel} onClick={handleOnSubmit} />
+                                    <Button isLoading={isButtonLoading} disabled={disabled} label={actionLabel} onClick={handleOnSubmit} />
                                 </div>
                                 {/* MODAL FOOTER */}
                                 {footer}

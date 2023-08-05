@@ -67,7 +67,7 @@ export const getHotelsByCityName = (city, page, limit, sort) => {
 export const getHotelByIdOrSlug = (slugOrId) => api.get(`/api/v1/hotel/get-hotel-by-id-or-slug/${slugOrId}`);
 export const getRoomsByHotelSlug = (hotelSlug) => api.get(`/api/v1/room/get-rooms-list-by-hotel-slug/${hotelSlug}`);
 
-export const getRoomByRoomSlugOrId = (slugOrId) => api.get(`/api/v1/room/get-room-by-id-or-slug/${slugOrId}`);
+export const getRoomByRoomSlugOrId = (slugOrId, hotelId) => api.get(`/api/v1/room/get-room-by-id-or-slug/${slugOrId}/${hotelId}`);
 
 export const bookRoom = (data) => api.post(`/api/v1/booking/book-room`, data);
 export const getBookingsByRoomId = (roomId) => api.get(`/api/v1/booking/get-bookings-by-room-id/${roomId}`);

@@ -203,9 +203,9 @@ const RegisterModal = () => {
 
     return (
         <div>
-            {step === STEPS.REGISTER ? (<Modal disabled={isLoading} isOpen={registerModal.isOpen} title="Register" actionLabel="Continue" onClose={handleClose} body={bodyContent} onSubmit={handleSubmit(onSubmit)}
+            {step === STEPS.REGISTER ? (<Modal isButtonLoading={isLoading} disabled={isLoading} isOpen={registerModal.isOpen} title="Register" actionLabel="Continue" onClose={handleClose} body={bodyContent} onSubmit={handleSubmit(onSubmit)}
                 footer={footerContent} />) : (
-                <Modal disabled={isLoading} isOpen={registerModal.isOpen} title="Verify email" actionLabel={"Open Gmail"} onClose={handleClose} body={bodyContent} onSubmit={handleEmailVerification} />
+                <Modal isButtonLoading={isLoading} disabled={isLoading} isOpen={registerModal.isOpen} title="Verify email" actionLabel={"Open Gmail"} onClose={handleClose} body={bodyContent} onSubmit={handleEmailVerification} />
             )}
         </div>
     );

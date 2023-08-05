@@ -23,6 +23,9 @@ class RoomController {
             const roomQuery = new QueryHelper(RoomModel.find({ hotelId: hotel[0]._id }).populate('addedBy', '-password').populate({
                 path: 'roomReviews.userId',
                 select: 'username fullname'
+            }).populate({
+                path: 'hotelId',
+                select: 'name hotelSlug'
             }), req.query);
 
             const findRooms = await roomQuery.query;
@@ -247,14 +250,19 @@ class RoomController {
         try {
             let room = {};
 
-
             if (/^[0-9a-fA-F]{24}$/.test(req.params.id)) {
-                room = await RoomModel.findById(req.params.id).populate('addedBy', '-password').populate({
+                room = await RoomModel.findOne({
+                    _id: req.params.id,
+                    hotelId: req.params.hotelId
+                }).populate('addedBy', '-password').populate({
                     path: 'roomReviews.userId',
                     select: 'username fullname'
                 });
             } else {
-                room = await RoomModel.findOne({ roomSlug: req.params.id }).populate('addedBy', '-password').populate({
+                room = await RoomModel.findOne({
+                    roomSlug: req.params.id,
+                    hotelId: req.params.hotelId
+                }).populate('addedBy', '-password').populate({
                     path: 'roomReviews.userId',
                     select: 'username fullname'
                 });

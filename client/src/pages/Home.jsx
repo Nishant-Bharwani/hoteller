@@ -29,7 +29,7 @@ const Home = () => {
                     setHotels(data?.result?.data?.rows);
                     setTotalPages(data?.result?.data?.total_page || 1);
                 } else {
-                    const { data } = await getAllHotels(keyword, page, 6, '');
+                    const { data } = await getAllHotels(keyword, page, 12, '');
                     setHotels(data?.result?.data?.rows);
                     setTotalPages(data?.result?.data?.total_page || 1);
                 }
@@ -51,7 +51,6 @@ const Home = () => {
         };
 
         handleGetAllHotels();
-        console.log(hotels);
     }, [city, page, keyword]);
 
     const handlePageChange = (newPage) => {
@@ -68,9 +67,10 @@ const Home = () => {
     }
 
     return (
-        <div className='pb-20 pt-20'>
+        <div className='pb-[48px]'>
             <Container>
-                <div className='flex flex-col gap-10 items-center justify-between'>
+                <div className='flex flex-col gap-4 items-center justify-between'>
+                    {/* <SearchBar /> */}
                     <div className='
                 pt-24 
                 grid
@@ -90,9 +90,9 @@ const Home = () => {
                             })
                         }
                     </div>
-                    <div>
+                    {totalPages !== 1 && <div>
                         <Pagination currentPage={page} totalPages={totalPages} onPageChange={handlePageChange} />
-                    </div>
+                    </div>}
                 </div>
             </Container>
         </div>

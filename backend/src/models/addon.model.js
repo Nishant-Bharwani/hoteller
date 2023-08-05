@@ -14,7 +14,6 @@ const addonSchema = new mongoose.Schema({
     },
     description: {
         type: String,
-
     },
     price: {
         type: Number,
@@ -23,7 +22,7 @@ const addonSchema = new mongoose.Schema({
 
 }, { timestamps: true });
 
-addonSchema.pre('save', function(next) {
+addonSchema.pre('save', function (next) {
     if (this.addonSlug) {
         this.addonSlug = this.addonSlug.replace(/\s/g, '-');
     }

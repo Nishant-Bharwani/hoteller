@@ -1,4 +1,5 @@
-const Button = ({ label, onClick, disabled, outline, small, icon: Icon }) => {
+import { BeatLoader } from "react-spinners";
+const Button = ({ label, onClick, disabled, outline, small, icon: Icon, isLoading }) => {
     return (
         <button onClick={onClick} disabled={disabled} className={`relative disabled:opacity-70 disabled:cursor-not-allowed rounded-lg hover:opacity-80 w-full transition
          ${outline ? 'bg-white' : 'bg-sky-500'}
@@ -11,7 +12,11 @@ const Button = ({ label, onClick, disabled, outline, small, icon: Icon }) => {
          `}>
             {Icon && <Icon size={24} className='absolute left-4 top-3' />}
 
-            {label}</button>
+            <span className="flex flex-row gap-2 items-center justify-center">
+                {label}
+                {isLoading && <BeatLoader size={10} color="#fff" />}
+            </span>
+        </button>
     );
 };
 

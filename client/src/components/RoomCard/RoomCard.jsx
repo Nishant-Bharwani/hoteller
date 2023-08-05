@@ -39,14 +39,14 @@ const RoomCard = ({ data, onAction, disabled, actionLabel, actionId = "", user, 
 
 
     return (
-        <div onClick={() => !booking && navigate(`/room/${data.hotelId}/${data.roomSlug}`)} className='col-span-1 cursor-pointer group '>
+        <div onClick={() => !booking && navigate(`/room/${data.hotelId._id.toString()}/${data.roomSlug}`)} className='col-span-1 cursor-pointer group '>
             <div className='flex flex-col gap-2 w-full'>
                 <div className='aspect-square w-full relative overflow-hidden rounded-xl'>
-                    <Image fill="true" alt={"Hotel"} src={data.roomImages[0].url} className="object-cover w-full group-hover:scale-110 transition" />
+                    <Image fill="true" alt={"Hotel"} src={data.roomImages[0].url} className="object-cover w-full group-hover:scale-110 transition h-full" />
 
                 </div>
 
-                <div onClick={() => booking && navigate(`/room/${data.hotelId}/${data.roomSlug}`)} className='font-semibold text-lg'>{data?.roomName} {booking && <span className='font-light'>in</span>} {booking && data?.hotelId?.name && (
+                <div onClick={() => booking && navigate(`/room/${data.hotelId._id.toString()}/${data.roomSlug}`)} className='font-semibold text-lg'>{data?.roomName} {booking && <span className='font-light'>in</span>} {booking && data?.hotelId?.name && (
                     <span onClick={() => navigate(data?.hotelId?.hotelSlug ? `/hotel/${data.hotelId.hotelSlug}` : '')} className=' cursor-pointer text-sm'>
                         {data.hotelId.name}
                     </span>)}</div>
@@ -65,7 +65,7 @@ const RoomCard = ({ data, onAction, disabled, actionLabel, actionId = "", user, 
                 </div>}
 
                 {onAction && actionLabel && (
-                    <Button disabled={disabled} small label={actionLabel} onClick={handleCancel} />
+                    <Button isLoading={disabled} disabled={disabled} small label={actionLabel} onClick={handleCancel} />
                 )}
             </div>
         </div>

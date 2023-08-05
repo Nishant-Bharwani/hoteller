@@ -76,6 +76,7 @@ const roomsSchema = new mongoose.Schema({
         required: [true, 'Room status filed is required'],
         default: 'available'
     },
+    addons: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Addons' }],
     addedBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Users',
