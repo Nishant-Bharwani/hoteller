@@ -48,7 +48,7 @@ app.use('/public', express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get('/', defaultController.defaultController);
+// app.get('/', defaultController.defaultController);
 
 
 app.use('/api/v1/auth', authRoute);
@@ -58,13 +58,16 @@ app.use('/api/v1/booking', bookingRoute);
 app.use('/api/v1/city', cityRoute);
 app.use('/api/v1/addon', addonRoute);
 
-app.use(notFoundRoute);
+if (process.env.NODE_ENV !== 'production') {
+    app.use(notFoundRoute);
+}
+
 app.use(errorHandler);
 
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.resolve(__dirname, '../client/build')));
+    app.use(express.static(path.resolve(__dirname, '../../../client/build')));
     app.get("*", (req, res) => {
-        res.sendFile(path.resolve(__dirname, '../client/build/index.html'));
+        res.sendFile(path.resolve(__dirname, '../../../client/build/index.html'));
     })
 }
 
