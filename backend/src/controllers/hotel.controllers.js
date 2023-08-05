@@ -239,7 +239,7 @@ class HotelController {
                 city,
                 description,
                 facilities,
-                hotelImages: req?.files?.map((file) => ({ url: `/uploads/hotels/${file.filename}` })),
+                hotelImages: req?.files?.map((file) => ({ url: `/public/uploads/hotels/${file.filename}` })),
                 addedBy: req?.user?._id
 
             });

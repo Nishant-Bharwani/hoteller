@@ -217,7 +217,7 @@ class RoomController {
                 featuredRoom,
                 roomDescription,
                 extraFacilities,
-                roomImages: req?.files?.map((file) => ({ url: `/uploads/rooms/${file.filename}` })),
+                roomImages: req?.files?.map((file) => ({ url: `/public/uploads/rooms/${file.filename}` })),
                 roomStatus,
                 addedBy: req.user._id
             };

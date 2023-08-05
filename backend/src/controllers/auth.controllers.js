@@ -75,7 +75,7 @@ class AuthController {
                     email,
                     phone,
                     password: hashedPassword,
-                    avatar: req.file ? `/uploads/users/${req.file.filename}` : '/avatar.png',
+                    avatar: req.file ? `/uploads/users/${req.file.filename}` : '/public/avatar.png',
                     gender,
                     dob: moment(dob, 'DD-MM_YYYY').toDate(),
                     address,

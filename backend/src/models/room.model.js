@@ -49,7 +49,7 @@ const roomsSchema = new mongoose.Schema({
             type: String,
             required: [true, 'Room image filed is required'],
             get: (image) => {
-                if (image) return `${BASE_URL}/${image}`;
+                if (image) return `${BASE_URL}${image}`;
 
                 return image;
             }

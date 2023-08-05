@@ -45,7 +45,7 @@ const hotelSchema = Schema({
             required: [true, 'Hotel image filed is required'],
             get: (image) => {
                 if (image) {
-                    return `${BASE_URL}/${image}`;
+                    return `${BASE_URL}${image}`;
                 }
 
                 return image;
