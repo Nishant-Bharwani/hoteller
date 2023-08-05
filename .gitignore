@@ -4,7 +4,6 @@
 /client/node_modules
 /backend/.env
 /backend/logs
-/backend/public/uploads
 /frontend
 /client/.env
 /tasks.md
