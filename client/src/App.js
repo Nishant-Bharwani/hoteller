@@ -4,6 +4,7 @@ import LoginModal from './components/shared/modals/LoginModal';
 import RegisterModal from './components/shared/modals/RegisterModal';
 import SearchModal from './components/shared/modals/SearchModal';
 import BookingsPage from './pages/BookingsPage';
+import CheckoutSuccess from './pages/CheckoutSuccess';
 import Home from './pages/Home';
 import HotelPage from './pages/HotelPage';
 import RoomPage from './pages/RoomPage';
@@ -29,6 +30,7 @@ function App() {
         <Route path='/hotel/:hotelSlug' element={<HotelPage />} />
         <Route path='/room/:hotelId/:roomSlug' element={<RoomPage />} />
         <Route path='/user/bookings' element={<BookingsPage />} />
+        <Route path='/checkout-success/:bookingId/:transactionId/:amount' element={<CheckoutSuccess />} />
       </Routes>
     </BrowserRouter>
   );

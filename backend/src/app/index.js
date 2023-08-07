@@ -28,6 +28,7 @@ const roomRoute = require('../routes/room.routes');
 const bookingRoute = require('../routes/booking.routes');
 const cityRoute = require('../routes/city.routes');
 const addonRoute = require('../routes/addon.routes');
+const paymentRoute = require('../routes/payment.routes');
 const corsOptions = require('../configs/cors.config');
 
 
@@ -57,6 +58,7 @@ app.use('/api/v1/room', roomRoute);
 app.use('/api/v1/booking', bookingRoute);
 app.use('/api/v1/city', cityRoute);
 app.use('/api/v1/addon', addonRoute);
+app.use('/api/v1/payment', paymentRoute);
 
 if (process.env.NODE_ENV !== 'production') {
     app.use(notFoundRoute);

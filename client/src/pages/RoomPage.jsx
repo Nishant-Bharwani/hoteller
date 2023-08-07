@@ -12,7 +12,6 @@ const RoomPage = () => {
     const [roomData, setRoomData] = useState(null);
     const [bookings, setBookings] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    console.log(hotelId);
     const { user } = useSelector((state) => state.persistedAuthReducer);
     useEffect(() => {
         const handleGetRoom = async () => {
@@ -20,7 +19,6 @@ const RoomPage = () => {
                 setIsLoading(true);
                 const { data } = await getRoomByRoomSlugOrId(roomSlug, hotelId);
                 setRoomData(data?.result?.data);
-                console.log(roomData);
             } catch (err) {
                 toast.error(err?.response?.data?.result?.error || "Unable to get Room information", {
                     position: "top-right",
@@ -47,6 +45,7 @@ const RoomPage = () => {
     useEffect(() => {
         const getBookings = async () => {
             try {
+                console.log(roomData);
                 const { data } = await getBookingsByRoomId(roomData?._id || roomData?.id);
                 setBookings(data?.result?.data);
             } catch (err) {
@@ -55,7 +54,7 @@ const RoomPage = () => {
         }
 
         getBookings();
-    }, [roomData?._id]);
+    }, [roomData, roomData?._id]);
 
     if (isLoading) return <Loader />
 

@@ -18,7 +18,6 @@ const intialDateRange = {
 };
 
 const Room = ({ data, user, bookings = [] }) => {
-    console.log(data);
     const loginModal = useLoginModal();
     const navigate = useNavigate();
     const disabledDates = useMemo(() => {
@@ -76,6 +75,7 @@ const Room = ({ data, user, bookings = [] }) => {
 
         setIsLoading(true);
         try {
+            console.log("Checkin", parseDate(dateRange.startDate), "Checkout", parseDate(dateRange.endDate));
             await bookRoom({
                 roomId: data?._id,
                 checkIn: parseDate(dateRange.startDate),
@@ -83,6 +83,8 @@ const Room = ({ data, user, bookings = [] }) => {
                 numberOfGuests,
                 addons: selectedAddonIds
             });
+
+
 
             setDateRange(intialDateRange);
             toast.success("Your Room is booked", {
@@ -112,7 +114,7 @@ const Room = ({ data, user, bookings = [] }) => {
             setIsLoading(false);
         }
 
-    }, [navigate, data?._id, dateRange.endDate, dateRange.startDate, loginModal, user, numberOfGuests]);
+    }, [navigate, data?._id, dateRange.endDate, dateRange.startDate, loginModal, user, numberOfGuests, selectedAddonIds]);
 
 
     useEffect(() => {
@@ -139,7 +141,6 @@ const Room = ({ data, user, bookings = [] }) => {
         }
 
 
-        console.log(selectedAddons, selectedAddonIds);
     }, [selectedAddonIds, selectedAddons, dateRange, data?.roomPrice]);
 
 

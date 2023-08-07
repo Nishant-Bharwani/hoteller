@@ -80,6 +80,8 @@ export const getAllCities = () => api.get('/api/v1/city/get-all-cities');
 
 export const getAllAddons = () => api.get('/api/v1/addon/get-all-addons');
 
+export const confirmPayment = (data) => api.post('/api/v1/payment/create-payment', data);
+
 // Interceptors
 
 api.interceptors.response.use(
@@ -92,7 +94,8 @@ api.interceptors.response.use(
         if (error.response.status !== 200 && orignalRequest && !orignalRequest.isRetry) {
             orignalRequest.isRetry = true;
             try {
-                await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/auth/refresh-token`, {
+                const refreshTokenApiUrl = process.env.NODE_ENV === 'production' ? 'https://hoteller.onrender.com/api/v1/auth/refresh-token' : 'http://localhost:5000/api/v1/auth/refresh-token';
+                await axios.get(refreshTokenApiUrl, {
                     withCredentials: true
                 });
 
