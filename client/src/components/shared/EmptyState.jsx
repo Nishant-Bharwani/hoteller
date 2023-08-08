@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import Button from '../primitives/Button'
 import Heading from '../primitives/Heading'
 
-const EmptyState = ({ title, subtitle, showReset }) => {
+const EmptyState = ({ title, subtitle, showReset, showResetLabel = "Remove Filter" }) => {
     const navigate = useNavigate();
 
     return (
@@ -11,7 +11,7 @@ const EmptyState = ({ title, subtitle, showReset }) => {
             <Heading center title={title} subtitle={subtitle} />
             <div className='w-48 mt-4'>
                 {showReset && (
-                    <Button outline label="Remove filter" onClick={() => navigate('/')} />
+                    <Button outline label={showResetLabel} onClick={() => navigate('/')} />
                 )}
             </div>
         </div>

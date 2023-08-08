@@ -1,4 +1,5 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter, Navigate, Redirect, Route, Routes, useLocation } from 'react-router-dom';
 import Navbar from './components/navbar/Navbar';
 import LoginModal from './components/shared/modals/LoginModal';
 import RegisterModal from './components/shared/modals/RegisterModal';
@@ -6,11 +7,13 @@ import SearchModal from './components/shared/modals/SearchModal';
 import BookingsPage from './pages/BookingsPage';
 import Home from './pages/Home';
 import HotelPage from './pages/HotelPage';
+import NotFound from './pages/NotFound';
 import RoomPage from './pages/RoomPage';
 import VerifyEmail from './pages/VerifyEmail';
 import ToasterProvider from './providers/ToasterProvider';
 
 function App() {
+
   return (
     <BrowserRouter>
       <ToasterProvider />
@@ -29,6 +32,9 @@ function App() {
         <Route path='/hotel/:hotelSlug' element={<HotelPage />} />
         <Route path='/room/:hotelId/:roomSlug' element={<RoomPage />} />
         <Route path='/user/bookings' element={<BookingsPage />} />
+
+        <Route path="*" element={<NotFound />} />
+
       </Routes>
     </BrowserRouter>
   );

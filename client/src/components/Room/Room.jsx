@@ -177,10 +177,16 @@ const Room = ({ data, user, bookings = [] }) => {
 
 
         if (dateRange.startDate && dateRange.endDate) {
-            const dayCount = differenceInCalendarDays(
-                dateRange.endDate,
-                dateRange.startDate
-            );
+            let dayCount;
+            if (dateRange.startDate === dateRange.endDate) {
+                dayCount = 1;
+            } else {
+                dayCount = differenceInCalendarDays(
+                    dateRange.endDate,
+                    dateRange.startDate
+                );
+            }
+
             if (dayCount && data?.roomPrice) {
                 setTotalPrice(dayCount * data?.roomPrice);
             } else {
@@ -191,7 +197,6 @@ const Room = ({ data, user, bookings = [] }) => {
             for (let i = 0; i < selectedAddons.length; i++) {
                 addonPrice += selectedAddons[i]?.price;
             }
-
             if (addonPrice) setTotalPrice((prev) => prev + (addonPrice * dayCount));
         }
 
