@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { BrowserRouter, Navigate, Redirect, Route, Routes, useLocation } from 'react-router-dom';
 import Navbar from './components/navbar/Navbar';
 import LoginModal from './components/shared/modals/LoginModal';
@@ -31,7 +32,11 @@ function App() {
 
         <Route path='/hotel/:hotelSlug' element={<HotelPage />} />
         <Route path='/room/:hotelId/:roomSlug' element={<RoomPage />} />
-        <Route path='/user/bookings' element={<BookingsPage />} />
+        <Route path='/user/bookings' element={
+          <ProtectedRoute>
+            <BookingsPage />
+          </ProtectedRoute>
+        } />
 
         <Route path="*" element={<NotFound />} />
 
@@ -39,5 +44,18 @@ function App() {
     </BrowserRouter>
   );
 }
+
+
+const ProtectedRoute = ({ children }) => {
+  const { user } = useSelector((state) => state.persistedAuthReducer);
+
+  const location = useLocation();
+  return !user ? (
+    <Navigate to="/" state={{ from: location }} />
+  ) : (
+    children
+  );
+};
+
 
 export default App;
