@@ -19,7 +19,6 @@ const HotelPage = () => {
             try {
                 setIsLoading(true);
                 const { data } = await getRoomsByHotelSlug(hotelSlug);
-                console.log(data.result.data);
                 setRooms(data?.result?.data);
             } catch (err) {
                 console.log(err);
@@ -29,7 +28,6 @@ const HotelPage = () => {
         };
 
         handleGetAllRooms();
-        console.log(rooms);
     }, []);
 
     if (isLoading) return <Loader />

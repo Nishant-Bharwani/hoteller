@@ -35,7 +35,6 @@ const LoginModal = () => {
         // Axios req
         try {
             const { data } = await loginUser(_data);
-            console.log(data.result.data);
             dispatch(setAuth(data.result));
             toast.success(data.result.message, {
                 position: "top-right",

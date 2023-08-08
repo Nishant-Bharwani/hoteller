@@ -51,7 +51,7 @@ const Room = ({ data, user, bookings = [] }) => {
     const handleToggleSelection = (addon) => {
         setSelectedAddonIds((prevSelectedIds) =>
             prevSelectedIds.includes(addon?._id)
-                ? prevSelectedIds.filter((id) => { console.log(id); return id !== addon?._id })
+                ? prevSelectedIds.filter((id) => { return id !== addon?._id })
                 : [...prevSelectedIds, addon._id]
         );
 
@@ -119,7 +119,6 @@ const Room = ({ data, user, bookings = [] }) => {
             const razor = new window.Razorpay(razorpayOptions);
             razor.on('payment.success', function (response) {
                 const responseData = response?.detail || {};
-                console.log(responseData);
                 if (responseData.status === 'completed') {
                     setDateRange(intialDateRange);
                     toast.success("Your Room is booked", {
@@ -138,7 +137,6 @@ const Room = ({ data, user, bookings = [] }) => {
 
             razor.on('payment.error', function (response) {
                 const responseData = response?.detail || {};
-                console.log(responseData);
                 if (responseData.status === 'failed') {
                     toast.error("Payment failed. Please try again.", {
                         position: "top-right",
@@ -226,7 +224,7 @@ const Room = ({ data, user, bookings = [] }) => {
                         <div className='order-first mb-10 md:order-last md:col-span-3'>
                             <div className="w-full relative mb-4">
                                 <input id="numberOfGuests" disabled={isLoading}
-                                    placeholder="Number of Guests would be arriving" type={"number"} className={`peer w-full p-4 pt-6 font-light bg-white border-2 rounded-md outline-none transition disabled:opacity-70 disabled:cursor-not-allowed `} onChange={(e) => { setNumberOfGuests(e.target.value); console.log(numberOfGuests); }} />
+                                    placeholder="Number of Guests would be arriving" type={"number"} className={`peer w-full p-4 pt-6 font-light bg-white border-2 rounded-md outline-none transition disabled:opacity-70 disabled:cursor-not-allowed `} onChange={(e) => { setNumberOfGuests(e.target.value); }} />
                             </div>
                             <RoomBookings status={data?.roomStatus} price={data?.roomPrice} totalPrice={totalPrice} onChangeDate={(value) => setDateRange(value)} dateRange={dateRange} onSubmit={createBooking} disabled={isLoading} disabledDates={disabledDates} selectedAddons={selectedAddons} />
                         </div>

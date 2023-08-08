@@ -28,7 +28,6 @@ const SearchModal = () => {
             city
         }
         const queryString = qs.stringify(updatedQuery, { skipNull: true });
-        console.log(queryString);
         const url = `/?${queryString}`;
 
         searchModal.onClose();

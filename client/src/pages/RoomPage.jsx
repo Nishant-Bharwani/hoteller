@@ -45,7 +45,6 @@ const RoomPage = () => {
     useEffect(() => {
         const getBookings = async () => {
             try {
-                console.log(roomData);
                 const { data } = await getBookingsByRoomId(roomData?._id || roomData?.id);
                 setBookings(data?.result?.data);
             } catch (err) {

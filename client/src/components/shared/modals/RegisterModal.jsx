@@ -44,7 +44,6 @@ const RegisterModal = () => {
 
     const onSubmit = async (_data) => {
         setIsLoading(true);
-        console.log(_data);
 
         const [year, month, day] = _data.dob.split("-");
         _data.dob = `${day}-${month}-${year}`;
@@ -81,40 +80,8 @@ const RegisterModal = () => {
     };
 
     const handleEmailVerification = async () => {
-        // try {
-        //     setIsLoading(true);
-        //     const { data } = await sendEmailVerificationLink();
-        //     toast.success(data.result.message, {
-        //         position: "top-right",
-        //         autoClose: 5000,
-        //         hideProgressBar: false,
-        //         closeOnClick: true,
-        //         pauseOnHover: true,
-        //         draggable: true,
-        //         progress: undefined,
-        //         theme: "light",
-        //     });
-        //     registerModal.onClose();
-        // } catch (err) {
-        //     console.log(err);
-        //     toast.error(err.response.data.result.error, {
-        //         position: "top-right",
-        //         autoClose: 5000,
-        //         hideProgressBar: false,
-        //         closeOnClick: true,
-        //         pauseOnHover: true,
-        //         draggable: true,
-        //         progress: undefined,
-        //         theme: "light",
-        //     });
-        // } finally {
-        //     setIsLoading(false);
-        // }
-
         window.open("https://mail.google.com", "__blank");
         registerModal.onClose();
-
-
     };
 
 
