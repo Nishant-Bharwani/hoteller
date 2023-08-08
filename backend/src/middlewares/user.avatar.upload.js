@@ -26,9 +26,9 @@ const uploadPath = () => {
 const processImage = async (file) => {
     try {
         const jimpResp = await jimp.read(file);
-        
+
     } catch (err) {
-        
+
     }
 }
 
@@ -49,7 +49,6 @@ const avatarUpload = multer({
         fileSize: 1000000
     },
     fileFilter: (_req, file, cb) => {
-        logger.info(file);
         if (file.fieldname === 'avatar') {
             if (file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg') {
                 cb(null, true);

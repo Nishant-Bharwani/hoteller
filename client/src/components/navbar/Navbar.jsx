@@ -7,7 +7,7 @@ import UserMenu from './UserMenu';
 const Navbar = () => {
     const location = useLocation();
     let isNavbarVisible = false;
-    const navbarVisibilityRoutes = ['/auth', '/hotel', '/room', '/users'];
+    const navbarVisibilityRoutes = ['/auth', '/hotel', '/room', '/user'];
 
     navbarVisibilityRoutes.forEach((route) => {
         if (location.pathname.includes(route)) {
