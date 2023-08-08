@@ -80,7 +80,7 @@ export const getAllCities = () => api.get('/api/v1/city/get-all-cities');
 
 export const getAllAddons = () => api.get('/api/v1/addon/get-all-addons');
 
-export const confirmPayment = (data) => api.post('/api/v1/payment/create-payment', data);
+// export const confirmPayment = (data) => api.post('/api/v1/payment/create-payment', data);
 
 // Interceptors
 

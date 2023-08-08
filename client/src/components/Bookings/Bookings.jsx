@@ -16,11 +16,17 @@ const Bookings = ({ bookings, user }) => {
 
         const handleCancelBooking = async () => {
             try {
-                console.log(id);
-                console.log(deletingId);
                 const { data } = await cancelBooking(id);
-                console.log(deletingId);
-                console.log(data.result.message);
+                toast.success(data?.result?.data || "Booking cancelled successfully", {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
                 window.location.reload();
             } catch (err) {
                 console.log(err);
@@ -41,7 +47,7 @@ const Bookings = ({ bookings, user }) => {
 
         handleCancelBooking();
 
-    }, []);
+    }, [deletingId]);
 
     return (
         <div className='pb-20 pt-[7rem]'>
@@ -50,7 +56,7 @@ const Bookings = ({ bookings, user }) => {
 
                 <div className='mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8'>
                     {bookings.map((booking) => (
-                        <RoomCard key={booking._id} data={booking.roomId} user={user} actionId={booking._id} onAction={onCancel} disabled={deletingId === booking._id} actionLabel="Cancel Booking" booking={booking} />
+                        <RoomCard key={booking._id} data={booking.roomId} user={user} actionId={booking._id} onAction={onCancel} disabled={deletingId === booking._id} actionLabel={booking.status === 'completed' ? 'Checked Out' : 'Cancel booking'} booking={booking} />
                     ))}
                 </div>
             </Container>

@@ -6,8 +6,8 @@ const paymentSchema = new mongoose.Schema({
         ref: 'Bookings',
         required: true
     },
-    paymentMethod: { type: String, required: true },
-    transationId: { type: String, required: true },
+    paymentMethod: { type: String, required: false },
+    transationId: { type: String, required: false },
     amount: { type: Number, required: true },
     status: {
         type: String,

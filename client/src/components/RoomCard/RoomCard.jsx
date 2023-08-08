@@ -65,7 +65,7 @@ const RoomCard = ({ data, onAction, disabled, actionLabel, actionId = "", user, 
                 </div>}
 
                 {onAction && actionLabel && (
-                    <Button isLoading={disabled} disabled={disabled} small label={actionLabel} onClick={handleCancel} />
+                    <Button outline={booking?.status === 'completed'} isLoading={disabled} disabled={disabled || booking?.status === 'completed'} small label={actionLabel} onClick={handleCancel} />
                 )}
             </div>
         </div>

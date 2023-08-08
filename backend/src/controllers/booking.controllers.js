@@ -5,6 +5,10 @@ const BookingModel = require('../models/booking.model');
 const { SERVER_ERROR } = require("../../errors");
 const { successResponse, errorResponse } = require("../configs/api.response");
 const moment = require('moment');
+const { v4: uuidv4 } = require('uuid');
+
+const razorpay = require('../configs/razorpay.config');
+const PaymentModel = require("../models/payment.model");
 
 class BookingController {
     async bookRoom(req, res) {
@@ -118,14 +122,28 @@ class BookingController {
             };
 
             const booking = await BookingModel.create(bookingData);
-            room.roomStatus = 'booked';
-            await room.save();
+            // room.roomStatus = 'booked';
+            // await room.save();
+
+            const razorpayOrder = await razorpay.orders.create({
+                amount: total * 100, // Amount in paise
+                currency: 'INR',
+                // receipt: orderId,
+            });
+
+            await PaymentModel.create({
+                bookingId: booking._id,
+                amount: total,
+                transationId: uuidv4(),
+                status: 'pending'
+            });
+
 
             res.status(201).json(successResponse(
                 0,
                 'SUCCESS',
                 'New booking created successfully',
-                booking
+                { booking, razorpayOrder }
             ));
 
         } catch (err) {
@@ -161,7 +179,10 @@ class BookingController {
             }
 
             const bookings = await BookingModel.find({
-                roomId
+                roomId,
+                status: {
+                    $in: ['approved']
+                }
             });
 
             res.status(200).json(successResponse(
@@ -203,7 +224,11 @@ class BookingController {
             }
 
             const bookings = await BookingModel.find({
-                userId
+                userId,
+                $or: [
+                    { status: 'approved' },
+                    { status: 'completed' }
+                ]
             }).populate({
                 path: 'roomId',
                 populate: {
@@ -213,7 +238,7 @@ class BookingController {
                         select: 'name state -_id'
                     }
                 }
-            })
+            });
 
 
             res.status(201).json(successResponse(
@@ -258,11 +283,13 @@ class BookingController {
             const room = await RoomModel.findById(booking.roomId);
 
             if (booking.userId.equals(userId) || room.addedBy.equals(userId)) {
-                await BookingModel.findByIdAndDelete(bookingId);
+                // await BookingModel.findByIdAndDelete(bookingId);
+                booking.status = 'cancelled';
+                booking.save();
                 return res.status(201).json(successResponse(
                     0,
                     'SUCCESS',
-                    'Bookings deleted successfully',
+                    'Booking cancelled successfully',
                 ));
             } else {
                 return res.status(406).json(errorResponse(

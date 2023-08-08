@@ -16,4 +16,8 @@ exports.NODEMAILER_EMAIL_ADDRESS = process.env.NODEMAILER_EMAIL_ADDRESS;
 exports.NODEMAILER_APP_GENERATED_PASSWORD = process.env.NODEMAILER_APP_GENERATED_PASSWORD;
 
 // Stripe secrets
-exports.STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
+// exports.STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
+
+// Razorpay secrets
+exports.RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID;
+exports.RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET;

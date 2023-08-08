@@ -75,8 +75,7 @@ const Room = ({ data, user, bookings = [] }) => {
 
         setIsLoading(true);
         try {
-            console.log("Checkin", parseDate(dateRange.startDate), "Checkout", parseDate(dateRange.endDate));
-            await bookRoom({
+            const { data: bookRoomData } = await bookRoom({
                 roomId: data?._id,
                 checkIn: parseDate(dateRange.startDate),
                 checkOut: parseDate(dateRange.endDate),
@@ -84,20 +83,76 @@ const Room = ({ data, user, bookings = [] }) => {
                 addons: selectedAddonIds
             });
 
+            const booking = bookRoomData.result.data.booking;
+            const razorpayOrder = bookRoomData.result.data.razorpayOrder;
+
+            const API_URL = process.env.NODE_ENV === 'production' ? 'https://hoteller.onrender.com' : 'http://localhost:5000';
+            const RAZORPAY_KEY_ID = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_RAZORPAY_KEY_ID : process.env.RAZORPAY_KEY_ID;
+
+            const razorpayOptions = {
+                key: RAZORPAY_KEY_ID,
+                amount: booking.totalPrice,
+                currency: "INR",
+                name: "Hoteller",
+                description: `${data.roomName}`,
+                image: `${API_URL}/public/logo.png`,
+                order_id: razorpayOrder.id,
+                callback_url: `${API_URL}/api/v1/payment/confirm-payment?bookingId=${booking._id}`,
+                headers: {
+                    'orderId': `${razorpayOrder.id}`
+                },
+                prefill: {
+                    name: user.fullname,
+                    email: user.email,
+                },
+                notes: {
+                    "address": "Razorpay Corporate Office",
+                    "orderId": razorpayOrder.id
+                },
+                theme: {
+                    "color": "#3b82f6"
+                },
+                redirect: false,
+            };
 
 
-            setDateRange(intialDateRange);
-            toast.success("Your Room is booked", {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
+            const razor = new window.Razorpay(razorpayOptions);
+            razor.on('payment.success', function (response) {
+                const responseData = response?.detail || {};
+                console.log(responseData);
+                if (responseData.status === 'completed') {
+                    setDateRange(intialDateRange);
+                    toast.success("Your Room is booked", {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                    });
+                    navigate('/user/bookings');
+                }
             });
-            navigate('/user/bookings')
+
+            razor.on('payment.error', function (response) {
+                const responseData = response?.detail || {};
+                console.log(responseData);
+                if (responseData.status === 'failed') {
+                    toast.error("Payment failed. Please try again.", {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                    });
+                }
+            });
+            razor.open();
         } catch (err) {
 
             toast.error(err?.response?.data?.result?.error || "Unable to book room", {
@@ -114,7 +169,7 @@ const Room = ({ data, user, bookings = [] }) => {
             setIsLoading(false);
         }
 
-    }, [navigate, data?._id, dateRange.endDate, dateRange.startDate, loginModal, user, numberOfGuests, selectedAddonIds]);
+    }, [navigate, data?._id, dateRange.endDate, dateRange.startDate, loginModal, user, numberOfGuests, selectedAddonIds, data?.roomName]);
 
 
     useEffect(() => {

@@ -24,7 +24,7 @@ const bookingSchema = new mongoose.Schema({
     status: {
         type: String,
         default: 'pending',
-        enum: ['pending', 'approved', 'rejected', 'running', 'completed'],
+        enum: ['pending', 'approved', 'rejected', 'cancelled', 'completed'],
         required: [true, 'Status filed is required']
     },
     addons: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Addons' }],
@@ -35,7 +35,10 @@ const bookingSchema = new mongoose.Schema({
     paymentStatus: {
         type: String,
         enum: ['pending', 'paid', 'failed']
-    }
+    },
+    razorpayPaymentId: { type: String },
+    razorpayOrderId: { type: String },
+    dateOfBooking: { type: Date, default: Date.now },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Bookings', bookingSchema);
