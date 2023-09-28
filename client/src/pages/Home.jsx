@@ -29,7 +29,7 @@ const Home = () => {
                     setHotels(data?.result?.data?.rows);
                     setTotalPages(data?.result?.data?.total_page || 1);
                 } else {
-                    const { data } = await getAllHotels(keyword, page, 12, '');
+                    const { data } = await getAllHotels(keyword, page, 8, '');
                     setHotels(data?.result?.data?.rows);
                     setTotalPages(data?.result?.data?.total_page || 1);
                 }
