@@ -21,3 +21,7 @@ exports.NODEMAILER_APP_GENERATED_PASSWORD = process.env.NODEMAILER_APP_GENERATED
 // Razorpay secrets
 exports.RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID;
 exports.RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET;
+
+// Google Oauth Secerets
+exports.OAUTH_CLIENT_ID = process.env.OAUTH_CLIENT_ID;
+exports.OAUTH_CLIENT_SECRET = process.env.OAUTH_CLIENT_SECRET;
